@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using EmployeeManager.Domain.Entities;
 using EmployeeManager.Domain.Requests;
 
-namespace EmployeeManager.Domain.Interfaces
+namespace EmployeeManager.Domain.Interfaces.Services
 {
     public interface IEmployeeService
     {

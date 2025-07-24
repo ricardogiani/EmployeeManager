@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using EmployeeManager.Application.Dtos;
 using EmployeeManager.Domain.Entities;
-using EmployeeManager.Domain.Interfaces;
+using EmployeeManager.Domain.Interfaces.Services;
 using EmployeeManager.Domain.Requests;
 using Microsoft.AspNetCore.Mvc;
 

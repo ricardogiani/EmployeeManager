@@ -6,7 +6,9 @@ using Bogus;
 using Bogus.Extensions.Brazil;
 using EmployeeManager.Domain.Entities;
 using EmployeeManager.Domain.Exceptions;
+using EmployeeManager.Domain.Interfaces.Repositories;
 using EmployeeManager.Domain.Services;
+using Moq;
 
 namespace EmployeeManager.Test
 {
@@ -79,8 +81,10 @@ namespace EmployeeManager.Test
             EmployeeEntity employeeToCreate = faker.Generate();
             employeeToCreate.JobLevel = Domain.Enums.JobLevelEnum.Intern;
 
-
-            EmployeeService service = new EmployeeService();
+            var repoMock = new Mock<IEmployeeRepository>();
+            
+            // TODO simular os metodos do repoMock
+            EmployeeService service = new EmployeeService(repoMock.Object);
 
             var newEmployeeCreated = await service.Create(employeeToCreate);
 

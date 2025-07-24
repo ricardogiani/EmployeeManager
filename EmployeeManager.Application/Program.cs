@@ -1,5 +1,5 @@
 using EmployeeManager.Application.Mappers;
-using EmployeeManager.Domain.Interfaces;
+using EmployeeManager.Domain.Interfaces.Services;
 using EmployeeManager.Domain.Services;
 
 internal class Program
