@@ -12,24 +12,24 @@ namespace EmployeeManager.Application.Dtos
 
         public bool Active { get; set; }
 
-        public string FirstName { get; private set; }
+        public string FirstName { get; set; }
 
-        public string LastName { get; private set; }
+        public string LastName { get; set; }
 
-        public string Email { get; private set; }
+        public string Email { get; set; }
 
-        public string DocumentNumber { get; private set; }
+        public string DocumentNumber { get; set; }
 
-        public int Age { get; private set; }
+        public DateTime BirthDate { get; set; }
 
-        public JobLevelEnum JobLevel { get; private set; }
+        public JobLevelEnum JobLevel { get; set; }
 
-        public List<string> PhoneNumbers { get; private set; } = new();
+        public string PhoneNumber { get; set; }
 
-        public Guid? ManagerId { get; private set; }
+        public Guid? ManagerId { get; set; }
 
-        public DateTime? CreatedAt { get; private set; }
+        public DateTime? CreatedAt { get; set; }
         
-        public DateTime? UpdatedAt { get; private set; }
+        public DateTime? UpdatedAt { get; set; }
     }
 }

@@ -12,23 +12,23 @@ namespace EmployeeManager.Domain.Entities
 {
     public class EmployeeEntity
     {
-        public Guid Id { get; private set; } = Guid.NewGuid();
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         public bool Active { get; set; } = true;
 
         [Required]
-        public string FirstName { get; private set; }        
+        public string FirstName { get; set; }        
 
         [Required]
-        public string LastName { get; private set; }
+        public string LastName { get; set; }
 
         [Required]
         [EmailAddress]
-        public string Email { get; private set; }
+        public string Email { get; set; }
 
         [Required]
-        public string DocumentNumber { get; private set; } // Must be unique
+        public string DocumentNumber { get; set; } // Must be unique
 
         [Required]
         public DateTime BirthDate { get; set; } 
@@ -36,19 +36,18 @@ namespace EmployeeManager.Domain.Entities
         [Required]
         public JobLevelEnum JobLevel { get; set; }
 
-        [Required]
         public string PhoneNumber { get; set; }
 
-        public Guid? ManagerId { get; private set; }
-        public EmployeeEntity? Manager { get; private set; }
+        public Guid? ManagerId { get; set; }
+        public EmployeeEntity? Manager { get; set; }
 
         // Store hashed password and salt for security
-        public string PasswordHash { get; private set; }
-        public string PasswordSalt { get; private set; }
+        public string PasswordHash { get; set; }
+        public string PasswordSalt { get; set; }
 
-        public DateTime? CreatedAt { get; private set; }
+        public DateTime? CreatedAt { get; set; }
         
-        public DateTime? UpdatedAt { get; private set; }
+        public DateTime? UpdatedAt { get; set; }
 
         public EmployeeEntity() { }
 

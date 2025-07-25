@@ -18,8 +18,10 @@ namespace EmployeeManager.Adapter.Repositories
 
         private readonly IMapper _mapper;
 
-        public EmployeeRepository(IConfiguration configuration)
+        public EmployeeRepository(IConfiguration configuration, IMapper mapper)
         {
+            _mapper = mapper;
+
             var connectionString = configuration.GetConnectionString("Default");
 
             var tableName = configuration["DataBase:EmployeeTableName"];
@@ -55,9 +57,11 @@ namespace EmployeeManager.Adapter.Repositories
         {
             var resulAll = await _dapperDataSource.GetAll();
 
-            var resultQuery = resulAll.Where(x => MatchFilter(x, filter));
+            var resultQuery = resulAll.Where(x => MatchFilter(x, filter)).ToList();
 
-            return _mapper.Map<IEnumerable<EmployeeEntity>>(resultQuery); ;
+            //var result = _mapper.Map<EmployeeEntity>(new EmployeeDataModel() { BirthDate = DateTime.Now.AddYears(-20), FirstName = "asdasd", DocumentNumber = "asdadasdas", LastName = "asdadadasd", Email = "ricardogiani@gmail.com", JobLevel = Domain.Enums.JobLevelEnum.Coordinator });
+
+            return _mapper.Map<IEnumerable<EmployeeEntity>>(resultQuery);
         }
 
         public bool MatchFilter(EmployeeDataModel model, EmployeeFilterRequest filter)

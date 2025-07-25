@@ -29,7 +29,7 @@ namespace EmployeeManager.Adapter.Models
 
         public JobLevelEnum JobLevel { get; set; }
 
-        public Guid? ManagerId { get; private set; }
+        public Guid? ManagerId { get; set; }
 
         public string PasswordHash { get; set; }
 
