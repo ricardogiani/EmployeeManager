@@ -17,7 +17,7 @@ namespace EmployeeManager.Test
     public class EmployeeServiceTest
     {
         [TestMethod]
-        public void CreateEmployee_ShouldExceptions_BecauseNewEmployeeHasHigherLevel()
+        public async Task CreateEmployee_ShouldBusinessExceptions()
         {
             var faker = new Faker<EmployeeEntity>()
                 .CustomInstantiator(f =>
@@ -39,15 +39,21 @@ namespace EmployeeManager.Test
             EmployeeEntity user = faker.Generate();
 
             EmployeeEntity employeeToCreate = faker.Generate();
-            employeeToCreate.JobLevel = Domain.Enums.JobLevelEnum.Coordinator;
+            employeeToCreate.JobLevel = Domain.Enums.JobLevelEnum.Director;
 
+            var repoMock = new Mock<IEmployeeRepository>();
 
-            Assert.ThrowsException<BusinessRuleValidationException>(() =>
+            repoMock.Setup(repo => repo.Query(new EmployeeFilterRequest()))
+                    .ReturnsAsync([]);
+
+            repoMock.Setup(repo => repo.Save(employeeToCreate))
+                      .ReturnsAsync(employeeToCreate);
+
+            EmployeeService service = new EmployeeService(repoMock.Object);
+
+            await Assert.ThrowsExceptionAsync<BusinessRuleValidationException>(async () =>
                 {
-                    if ((int)user.JobLevel <= (int)employeeToCreate.JobLevel)
-                    {
-                        throw new BusinessRuleValidationException("Operation not permited");
-                    }
+                    await service.Create(employeeToCreate);
                 }
             );
 
@@ -87,7 +93,6 @@ namespace EmployeeManager.Test
             repoMock.Setup(repo => repo.Save(employeeToCreate))
                       .ReturnsAsync(employeeToCreate);
 
-            // TODO simular os metodos do repoMock
             EmployeeService service = new EmployeeService(repoMock.Object);
 
             var newEmployeeCreated = await service.Create(employeeToCreate);
@@ -97,7 +102,7 @@ namespace EmployeeManager.Test
         }
 
         [TestMethod]
-        public async Task GetEmployee_ShouldReturnOneEmployee()
+        public async Task GetEmployee_GetById_ShouldReturnOneEmployee()
         {
             var faker = new Faker<EmployeeEntity>()
                 .CustomInstantiator(f =>
@@ -135,7 +140,7 @@ namespace EmployeeManager.Test
         }
 
         [TestMethod]
-        public async Task GetEmployees_ShouldReturnOneEmployee()
+        public async Task GetEmployees_Get_ShouldReturnManyEmployees()
         {
             var faker = new Faker<EmployeeEntity>()
                 .CustomInstantiator(f =>
@@ -172,7 +177,7 @@ namespace EmployeeManager.Test
         }
 
         [TestMethod]
-        public async Task CreateEmployee_ShouldExceptions_BecauseNewEmployeeIsNotAdult()
+        public async Task CreateEmployee_ShouldExceptions_NewEmployeeIsNotAdult()
         {
             var faker = new Faker<EmployeeEntity>()
                 .CustomInstantiator(f =>
@@ -215,8 +220,8 @@ namespace EmployeeManager.Test
                 }, "Assert BusinessRuleValidationException Ok"
             );
 
-            Assert.IsTrue(exception.Message == BusinessRuleValidationMessages.MessageBirthDate);
+            Assert.IsTrue(exception.Errors.Where(message => (message == BusinessRuleValidationMessages.MessageBirthDate)).Any());
 
-        }
+        }       
     }
 }

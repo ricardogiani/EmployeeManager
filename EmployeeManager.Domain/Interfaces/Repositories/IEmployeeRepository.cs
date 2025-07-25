@@ -9,13 +9,15 @@ namespace EmployeeManager.Domain.Interfaces.Repositories
 {
     public interface IEmployeeRepository
     {
-        Task<EmployeeEntity> Load(Guid id);
+        Task<EmployeeEntity?> Load(Guid id);
+
+        Task<EmployeeEntity> LoadByDocumentNumber(string documentNumber);
 
         Task<IEnumerable<EmployeeEntity>> Query(EmployeeFilterRequest filter);
 
         Task<EmployeeEntity> Save(EmployeeEntity documentModel);
 
-        Task Delete(Guid id);
+        Task<bool> Delete(Guid id);
         
     }
 }

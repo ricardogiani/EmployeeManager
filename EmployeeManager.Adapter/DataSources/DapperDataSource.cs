@@ -51,24 +51,33 @@ namespace EmployeeManager.Adapter.DataSources
                 return await connection.QueryAsync<TModel>(sql);
             }
         }
+        
+        public async Task<IEnumerable<TModel>> GetByField(string fieldName, string fieldValue)
+        {
+            var sql = $"SELECT * FROM {_tableName} WHERE \"{fieldName}\" = @FieldValue";
+            using (var connection = CreateConnection())
+            {
+                return await connection.QueryAsync<TModel>(sql, new { FieldValue = fieldValue });
+            }
+        }
 
         public async Task<TModel> Save(TModel model)
         {
             using var connection = GetConnection();
-            
+
             bool updated = await connection.UpdateAsync(model);
             if (!updated)
             {
-                await connection.InsertAsync(model); 
+                await connection.InsertAsync(model);
             }
 
             return model;
         }
 
-        public async Task Delete(TModel model)
+        public async Task<bool> Delete(TModel model)
         {
             using var connection = GetConnection();            
-            await connection.DeleteAsync(model);
+            return await connection.DeleteAsync(model);
         }
 
     }

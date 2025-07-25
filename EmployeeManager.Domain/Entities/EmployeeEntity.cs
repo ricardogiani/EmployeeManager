@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using EmployeeManager.Domain.Enums;
 using System.Text.RegularExpressions;
+using EmployeeManager.Domain.Exceptions;
 
 namespace EmployeeManager.Domain.Entities
 {
@@ -14,7 +15,10 @@ namespace EmployeeManager.Domain.Entities
         public Guid Id { get; private set; } = Guid.NewGuid();
 
         [Required]
-        public string FirstName { get; private set; }
+        public bool Active { get; set; } = true;
+
+        [Required]
+        public string FirstName { get; private set; }        
 
         [Required]
         public string LastName { get; private set; }
@@ -50,12 +54,10 @@ namespace EmployeeManager.Domain.Entities
 
         public EmployeeEntity(string firstName, string lastName, string email, string documentNumber)
         {
-            /*FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
+            FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
             LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
             Email = email ?? throw new ArgumentNullException(nameof(email));
-            DocumentNumber = documentNumber ?? throw new ArgumentNullException(nameof(documentNumber));*/
-
-            //(PasswordHash, PasswordSalt) = GeneratePasswordHash(plainPassword);
+            DocumentNumber = documentNumber ?? throw new ArgumentNullException(nameof(documentNumber));            
         }
 
 
@@ -145,6 +147,12 @@ namespace EmployeeManager.Domain.Entities
             // Compara o hash recém-gerado com o hash armazenado
             // Recomenda-se usar uma comparação segura para evitar ataques de tempo (timing attacks)
             return SlowEquals(newHash, storedHash);
+        }
+
+        public bool BusinessValidateBirthDate()
+        {
+            var majorityDate = DateTime.Now.Date.AddYears(-18);
+            return BirthDate.Date <= majorityDate;
         }
 
         private bool SlowEquals(string a, string b)

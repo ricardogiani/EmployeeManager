@@ -20,7 +20,6 @@ namespace EmployeeManager.Adapter.Repositories
 
         public EmployeeRepository(IConfiguration configuration)
         {
-            // TODO criar o Repository para nao expor o DataSource aqui
             var connectionString = configuration.GetConnectionString("Default");
 
             var tableName = configuration["DataBase:EmployeeTableName"];
@@ -28,29 +27,58 @@ namespace EmployeeManager.Adapter.Repositories
             _dapperDataSource = new DapperDataSource<EmployeeDataModel>(connectionString, tableName);
         }
 
-        public Task Delete(Guid id)
+        public async Task<bool> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            return await _dapperDataSource.Delete(new EmployeeDataModel() { Id = id });
         }
 
-        public async Task<EmployeeEntity> Load(Guid id)
+        public async Task<EmployeeEntity?> Load(Guid id)
         {
             var model = await _dapperDataSource.Load(id);
 
             if (model == null)
                 return null;
 
-            return _mapper.Map<EmployeeEntity>(model); 
+            return _mapper.Map<EmployeeEntity>(model);
         }
 
-        public Task<IEnumerable<EmployeeEntity>> Query(EmployeeFilterRequest filter)
+
+        public async Task<EmployeeEntity> LoadByDocumentNumber(string documentNumber)
         {
-            throw new NotImplementedException();
+            var resultList = await _dapperDataSource.GetByField("DocumentNumber", documentNumber);
+            var model = resultList.FirstOrDefault();
+
+            return _mapper.Map<EmployeeEntity>(model);
         }
 
-        public Task<EmployeeEntity> Save(EmployeeEntity documentModel)
+        public async Task<IEnumerable<EmployeeEntity>> Query(EmployeeFilterRequest filter)
         {
-            throw new NotImplementedException();
+            var resulAll = await _dapperDataSource.GetAll();
+
+            var resultQuery = resulAll.Where(x => MatchFilter(x, filter));
+
+            return _mapper.Map<IEnumerable<EmployeeEntity>>(resultQuery); ;
         }
+
+        public bool MatchFilter(EmployeeDataModel model, EmployeeFilterRequest filter)
+        {
+            return
+            (!filter.Active.HasValue || model.Active == filter.Active)
+            &&
+            (string.IsNullOrEmpty(filter.Email) || model.Email == filter.Email)
+            &&
+            (!filter.JobLevel.HasValue || model.JobLevel == filter.JobLevel)
+            &&
+            (string.IsNullOrEmpty(filter.PhoneNumber) || model.PhoneNumber == filter.PhoneNumber);            
+        }
+
+        public async Task<EmployeeEntity> Save(EmployeeEntity employeeEntity)
+        {
+            var model = _mapper.Map<EmployeeDataModel>(employeeEntity);
+            var modelSaved = await _dapperDataSource.Save(model);
+
+            return _mapper.Map<EmployeeEntity>(modelSaved);
+        }
+        
     }
 }

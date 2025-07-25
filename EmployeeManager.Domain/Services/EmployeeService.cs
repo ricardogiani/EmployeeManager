@@ -28,9 +28,7 @@ namespace EmployeeManager.Domain.Services
 
         public async Task<EmployeeEntity> Create(EmployeeEntity newEmployee)
         {
-            BusinessValidateBirthDate(newEmployee);
-            await BusinessValidateUniqueDocument(newEmployee);
-            BusinessValidateHigherLevel(newEmployee);
+            await BusinessValidate(newEmployee);
 
             var created = await _employeeRepository.Save(newEmployee);
 
@@ -60,35 +58,47 @@ namespace EmployeeManager.Domain.Services
 
         public async Task<EmployeeEntity> Update(Guid id, EmployeeEntity employee)
         {
-            await BusinessValidateUniqueDocument(employee);
-            BusinessValidateHigherLevel(employee);
+            await BusinessValidate(employee);
 
             var result = await _employeeRepository.Save(employee);
 
             return result;
         }
+
+        private async Task BusinessValidate(EmployeeEntity employee)
+        {
+            var validBirthDate = employee.BusinessValidateBirthDate();
+            var validUniqueDocument = await BusinessValidateUniqueDocument(employee);
+            var ValidJobLevel = BusinessValidateJobLevel(employee);
+
+            if (validBirthDate && validUniqueDocument && ValidJobLevel) return;
+
+            var errors = new List<string> {};
+
+            if (!validBirthDate)
+                errors.Add(BusinessRuleValidationMessages.MessageBirthDate);
+
+            if (!validUniqueDocument)
+                errors.Add(BusinessRuleValidationMessages.MessageUniqueDocument);
+
+            if (!ValidJobLevel)
+                errors.Add(BusinessRuleValidationMessages.MessageHigherLevel);
+
+            throw new BusinessRuleValidationException(errors);
+        }
         
-        private void BusinessValidateBirthDate(EmployeeEntity newEmployee)
+        private async Task<bool> BusinessValidateUniqueDocument(EmployeeEntity newEmployee)
         {
-            var majorityDate = DateTime.Now.Date.AddYears(-18);
-            if (newEmployee.BirthDate.Date > majorityDate)
-                throw new BusinessRuleValidationException(BusinessRuleValidationMessages.MessageBirthDate);
+            var find = await _employeeRepository.LoadByDocumentNumber(newEmployee.DocumentNumber);
+            return find == null;
         }
 
-        private async Task BusinessValidateUniqueDocument(EmployeeEntity newEmployee)
+        private bool BusinessValidateJobLevel(EmployeeEntity newEmployee)
         {
-            var find = await _employeeRepository.Query(new EmployeeFilterRequest() { DocumentNumber = newEmployee.DocumentNumber });
-            if (find.Any())
-                throw new BusinessRuleValidationException(BusinessRuleValidationMessages.MessageUniqueDocument);
-        }
+            // TODO
+            EmployeeEntity userEntity = new EmployeeEntity() { JobLevel = Enums.JobLevelEnum.Coordinator };
 
-        private void BusinessValidateHigherLevel(EmployeeEntity newEmployee)
-        {
-            // TODO para testes
-            EmployeeEntity userEntity = new EmployeeEntity() { JobLevel = Enums.JobLevelEnum.Director };
-
-            if ((int)userEntity.JobLevel <= (int)newEmployee.JobLevel)
-                throw new BusinessRuleValidationException(BusinessRuleValidationMessages.MessageHigherLevel);
+            return (int)userEntity.JobLevel >= (int)newEmployee.JobLevel;
         }
     }
 }
