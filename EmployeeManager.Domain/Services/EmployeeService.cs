@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EmployeeManager.Domain.Entities;
+using EmployeeManager.Domain.Exceptions;
 using EmployeeManager.Domain.Interfaces;
 using EmployeeManager.Domain.Interfaces.Repositories;
 using EmployeeManager.Domain.Interfaces.Services;
@@ -21,15 +22,19 @@ namespace EmployeeManager.Domain.Services
         }
 
 
+
         public Task<EmployeeEntity> ChangePassword(string plainPassword, string newPlainPassword)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<EmployeeEntity> Create(EmployeeEntity employeeEntity)
+        public async Task<EmployeeEntity> Create(EmployeeEntity newEmployee)
         {
-            //employeeEntity
-            var created = await _employeeRepository.Save(employeeEntity);
+            BusinessValidateBirthDate(newEmployee);
+            await BusinessValidateUniqueDocument(newEmployee);
+            BusinessValidateHigherLevel(newEmployee);
+
+            var created = await _employeeRepository.Save(newEmployee);
 
             return created;
         }
@@ -55,11 +60,37 @@ namespace EmployeeManager.Domain.Services
             return result;
         }
 
-        public async Task<EmployeeEntity> Update(Guid id, EmployeeEntity employeeEntity)
+        public async Task<EmployeeEntity> Update(Guid id, EmployeeEntity employee)
         {
-            var result = await _employeeRepository.Save(employeeEntity);
+            await BusinessValidateUniqueDocument(employee);
+            BusinessValidateHigherLevel(employee);
+
+            var result = await _employeeRepository.Save(employee);
 
             return result;
+        }
+        
+        private void BusinessValidateBirthDate(EmployeeEntity newEmployee)
+        {
+            var majorityDate = DateTime.Now.Date.AddYears(-18);
+            if (newEmployee.BirthDate.Date > majorityDate)
+                throw new BusinessRuleValidationException(BusinessRuleValidationMessages.MessageBirthDate);
+        }
+
+        private async Task BusinessValidateUniqueDocument(EmployeeEntity newEmployee)
+        {
+            var find = await _employeeRepository.Query(new EmployeeFilterRequest() { DocumentNumber = newEmployee.DocumentNumber });
+            if (find.Any())
+                throw new BusinessRuleValidationException(BusinessRuleValidationMessages.MessageUniqueDocument);
+        }
+
+        private void BusinessValidateHigherLevel(EmployeeEntity newEmployee)
+        {
+            // TODO para testes
+            EmployeeEntity userEntity = new EmployeeEntity() { JobLevel = Enums.JobLevelEnum.Director };
+
+            if ((int)userEntity.JobLevel <= (int)newEmployee.JobLevel)
+                throw new BusinessRuleValidationException(BusinessRuleValidationMessages.MessageHigherLevel);
         }
     }
 }

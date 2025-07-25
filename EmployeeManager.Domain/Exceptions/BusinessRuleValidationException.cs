@@ -5,6 +5,14 @@ using System.Threading.Tasks;
 
 namespace EmployeeManager.Domain.Exceptions
 {
+
+    public static class BusinessRuleValidationMessages
+    {
+        public static readonly string MessageBirthDate = "The employee is not of adult age";
+        public static readonly string MessageUniqueDocument = "There is a document for another employee";
+        public static readonly string MessageHigherLevel = "Operation not permited, NewEmployee has Higher Level";
+    }
+
     public class BusinessRuleValidationException : Exception
     {
         public IEnumerable<string> Errors { get; } // Lista de mensagens de erro

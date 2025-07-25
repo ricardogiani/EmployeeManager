@@ -27,7 +27,7 @@ namespace EmployeeManager.Domain.Entities
         public string DocumentNumber { get; private set; } // Must be unique
 
         [Required]
-        public int Age { get; private set; } 
+        public DateTime BirthDate { get; set; } 
 
         [Required]
         public JobLevelEnum JobLevel { get; set; }
