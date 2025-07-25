@@ -1,4 +1,7 @@
+using EmployeeManager.Adapter.Mappers;
+using EmployeeManager.Adapter.Repositories;
 using EmployeeManager.Application.Mappers;
+using EmployeeManager.Domain.Interfaces.Repositories;
 using EmployeeManager.Domain.Interfaces.Services;
 using EmployeeManager.Domain.Services;
 
@@ -14,9 +17,14 @@ internal class Program
         builder.Services.AddSwaggerGen();
         builder.Services.AddControllers();
 
-        builder.Services.AddAutoMapper(cfg => cfg.AddProfile<EmployeeMappingProfile>());
+        builder.Services.AddAutoMapper(cfg =>
+        {
+            cfg.AddProfile<EmployeeMappingProfile>();
+            cfg.AddProfile<EmployeeDataMappingProfile>();
+        });
 
         builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+        builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
         var app = builder.Build();
 

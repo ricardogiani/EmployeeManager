@@ -21,8 +21,6 @@ namespace EmployeeManager.Domain.Services
             _employeeRepository = employeeRepository;
         }
 
-
-
         public Task<EmployeeEntity> ChangePassword(string plainPassword, string newPlainPassword)
         {
             throw new NotImplementedException();

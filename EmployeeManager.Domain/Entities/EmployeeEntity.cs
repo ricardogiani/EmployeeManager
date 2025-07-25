@@ -32,7 +32,8 @@ namespace EmployeeManager.Domain.Entities
         [Required]
         public JobLevelEnum JobLevel { get; set; }
 
-        public List<string> PhoneNumbers { get; private set; } = new();
+        [Required]
+        public string PhoneNumber { get; set; }
 
         public Guid? ManagerId { get; private set; }
         public EmployeeEntity? Manager { get; private set; }
@@ -93,11 +94,6 @@ namespace EmployeeManager.Domain.Entities
             (PasswordHash, PasswordSalt) = GeneratePasswordHash(plainPassword);
         }
 
-        public void AddPhoneNumber(string phoneNumber)
-        {
-            if (!string.IsNullOrWhiteSpace(phoneNumber))
-                PhoneNumbers.Add(phoneNumber);
-        }
 
         public void AssignManager(EmployeeEntity manager)
         {

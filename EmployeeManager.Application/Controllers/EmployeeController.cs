@@ -21,10 +21,11 @@ namespace EmployeeManager.Application.Controllers
 
         private readonly ILogger<EmployeeController> _logger;
 
-        public EmployeeController(IEmployeeService employeeService, IMapper mapper)
+        public EmployeeController(IEmployeeService employeeService, IMapper mapper, ILogger<EmployeeController> logger)
         {
             _employeeService = employeeService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         /// <summary>
