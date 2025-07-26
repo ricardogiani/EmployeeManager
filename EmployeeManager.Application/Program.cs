@@ -1,5 +1,6 @@
 using EmployeeManager.Adapter.Mappers;
 using EmployeeManager.Adapter.Repositories;
+using EmployeeManager.Application;
 using EmployeeManager.Application.Mappers;
 using EmployeeManager.Domain.Interfaces.Repositories;
 using EmployeeManager.Domain.Interfaces.Services;
@@ -22,9 +23,11 @@ internal class Program
             cfg.AddProfile<EmployeeMappingProfile>();
             cfg.AddProfile<EmployeeDataMappingProfile>();
         });
-
+        
+        builder.Services.AddSingleton<IAdapterConfig, AdapterConfig>();
         builder.Services.AddScoped<IEmployeeService, EmployeeService>();
         builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        builder.Services.AddHostedService<StartupService>();
 
         var app = builder.Build();
 

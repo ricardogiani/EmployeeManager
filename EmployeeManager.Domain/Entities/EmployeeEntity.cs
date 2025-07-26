@@ -12,7 +12,7 @@ namespace EmployeeManager.Domain.Entities
 {
     public class EmployeeEntity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
 
         [Required]
         public bool Active { get; set; } = true;
@@ -38,7 +38,7 @@ namespace EmployeeManager.Domain.Entities
 
         public string PhoneNumber { get; set; }
 
-        public Guid? ManagerId { get; set; }
+        public int? ManagerId { get; set; }
         public EmployeeEntity? Manager { get; set; }
 
         // Store hashed password and salt for security

@@ -29,12 +29,12 @@ namespace EmployeeManager.Adapter.Repositories
             _dapperDataSource = new DapperDataSource<EmployeeDataModel>(connectionString, tableName);
         }
 
-        public async Task<bool> Delete(Guid id)
+        public async Task<bool> Delete(int id)
         {
-            return await _dapperDataSource.Delete(new EmployeeDataModel() { Id = id });
+            return await _dapperDataSource.Delete(new EmployeeDataModel() { id = id });
         }
 
-        public async Task<EmployeeEntity?> Load(Guid id)
+        public async Task<EmployeeEntity?> Load(int id)
         {
             var model = await _dapperDataSource.Load(id);
 
@@ -47,7 +47,7 @@ namespace EmployeeManager.Adapter.Repositories
 
         public async Task<EmployeeEntity> LoadByDocumentNumber(string documentNumber)
         {
-            var resultList = await _dapperDataSource.GetByField("DocumentNumber", documentNumber);
+            var resultList = await _dapperDataSource.GetByField("document_number", documentNumber);
             var model = resultList.FirstOrDefault();
 
             return _mapper.Map<EmployeeEntity>(model);
@@ -67,17 +67,20 @@ namespace EmployeeManager.Adapter.Repositories
         public bool MatchFilter(EmployeeDataModel model, EmployeeFilterRequest filter)
         {
             return
-            (!filter.Active.HasValue || model.Active == filter.Active)
+            (!filter.Active.HasValue || model.active == filter.Active)
             &&
-            (string.IsNullOrEmpty(filter.Email) || model.Email == filter.Email)
+            (string.IsNullOrEmpty(filter.Email) || model.email == filter.Email)
             &&
-            (!filter.JobLevel.HasValue || model.JobLevel == filter.JobLevel)
+            (!filter.JobLevel.HasValue || model.job_level == filter.JobLevel)
             &&
-            (string.IsNullOrEmpty(filter.PhoneNumber) || model.PhoneNumber == filter.PhoneNumber);            
+            (string.IsNullOrEmpty(filter.PhoneNumber) || model.phone_number == filter.PhoneNumber);            
         }
 
         public async Task<EmployeeEntity> Save(EmployeeEntity employeeEntity)
         {
+            /*if (employeeEntity.Id == Guid.Empty)
+                employeeEntity.Id= Guid.NewGuid(); */
+
             var model = _mapper.Map<EmployeeDataModel>(employeeEntity);
             var modelSaved = await _dapperDataSource.Save(model);
 

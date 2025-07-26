@@ -7,37 +7,44 @@ using EmployeeManager.Domain.Enums;
 
 namespace EmployeeManager.Adapter.Models
 {
-    [Table("employees")]
+    [Table("employees")] // Assuming your table is named 'employees' in snake_case
     public class EmployeeDataModel
     {
+        //[Key] // This indicates 'id' is the primary key for Dapper.Contrib
+        //public Guid id { get; set; }
+
         [Key]
-        public Guid Id { get; set; }
+        public Int64? id { get; set; } // Mapped to the database column
+        /*public Guid Id 
+        { 
+            get { return new Guid(IdString); } 
+            set { IdString = value.ToString(); } 
+        }*/
 
-        public bool Active { get; set; }
+        public bool active { get; set; } // Already snake_case
 
-        public string FirstName { get; set; }
+        public string first_name { get; set; } // Already snake_case
 
-        public string LastName { get; set; }
+        public string last_name { get; set; } // Converted from LastName
 
-        public string Email { get; set; }
+        public string email { get; set; } // Converted from Email
 
-        public string DocumentNumber { get; set; }
+        public string document_number { get; set; } // Converted from DocumentNumber
 
-        public string PhoneNumber { get; set; }
+        public string phone_number { get; set; } // Converted from PhoneNumber
 
-        public DateTime BirthDate { get; set; }
+        public DateTime birth_date { get; set; } // Converted from BirthDate
 
-        public JobLevelEnum JobLevel { get; set; }
+        public JobLevelEnum job_level { get; set; } // Converted from JobLevel (assuming JobLevelEnum is defined elsewhere)
 
-        public Guid? ManagerId { get; set; }
+        public Int64? manager_id { get; set; } // Converted from ManagerId
 
-        public string PasswordHash { get; set; }
+        public string password_hash { get; set; } // Converted from PasswordHash
 
-        public string PasswordSalt { get; set; }
+        public string password_salt { get; set; } // Converted from PasswordSalt
 
-        public DateTime? CreatedAt { get; set; }
+        public DateTime? created_at { get; set; } // Converted from CreatedAt
 
-        public DateTime? UpdatedAt { get; set; }
-
+        public DateTime? updated_at { get; set; } // Converted from UpdatedAt
     }
 }

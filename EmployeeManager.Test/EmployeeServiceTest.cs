@@ -116,6 +116,7 @@ namespace EmployeeManager.Test
 
                     employee.JobLevel = Domain.Enums.JobLevelEnum.Analyst;
                     employee.BirthDate = f.Person.DateOfBirth;
+                    employee.Id = f.Person.Random.Int();
 
                     return employee;
                 });
@@ -127,7 +128,7 @@ namespace EmployeeManager.Test
 
             var repoMock = new Mock<IEmployeeRepository>();
 
-            Guid id_to_find = employeeToFind.Id;
+            int id_to_find = employeeToFind.Id;
             repoMock.Setup(repo => repo.Load(id_to_find))
                       .ReturnsAsync(employeeToFind);
 

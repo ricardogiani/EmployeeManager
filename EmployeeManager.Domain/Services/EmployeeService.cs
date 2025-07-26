@@ -35,7 +35,7 @@ namespace EmployeeManager.Domain.Services
             return created;
         }
 
-        public async Task<bool> Delete(Guid id)
+        public async Task<bool> Delete(int id)
         {
             await _employeeRepository.Delete(id);
 
@@ -49,14 +49,14 @@ namespace EmployeeManager.Domain.Services
             return resultList;
         }
 
-        public async Task<EmployeeEntity> GetById(Guid id)
+        public async Task<EmployeeEntity> GetById(int id)
         {
             var result = await _employeeRepository.Load(id);
 
             return result;
         }
 
-        public async Task<EmployeeEntity> Update(Guid id, EmployeeEntity employee)
+        public async Task<EmployeeEntity> Update(int id, EmployeeEntity employee)
         {
             await BusinessValidate(employee);
 

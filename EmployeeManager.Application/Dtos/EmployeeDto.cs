@@ -8,7 +8,7 @@ namespace EmployeeManager.Application.Dtos
 {
     public class EmployeeDto
     {
-        public Guid Id { get; set; }
+        public int? Id { get; set; }
 
         public bool Active { get; set; }
 

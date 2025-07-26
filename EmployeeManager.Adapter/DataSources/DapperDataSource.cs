@@ -33,7 +33,7 @@ namespace EmployeeManager.Adapter.DataSources
             return new NpgsqlConnection(_connectionString);
         }
 
-        public async Task<TModel> Load(Guid id)
+        public async Task<TModel> Load(int id)
         {
             using (var connection = CreateConnection())
             {
@@ -54,10 +54,10 @@ namespace EmployeeManager.Adapter.DataSources
         
         public async Task<IEnumerable<TModel>> GetByField(string fieldName, string fieldValue)
         {
-            var sql = $"SELECT * FROM {_tableName} WHERE \"{fieldName}\" = @FieldValue";
+            var sql = $"SELECT * FROM {_tableName} WHERE \"{fieldName.ToLower()}\" = @fieldValue";
             using (var connection = CreateConnection())
             {
-                return await connection.QueryAsync<TModel>(sql, new { FieldValue = fieldValue });
+                return await connection.QueryAsync<TModel>(sql, new { fieldValue });
             }
         }
 

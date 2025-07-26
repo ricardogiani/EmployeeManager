@@ -9,7 +9,7 @@ namespace EmployeeManager.Domain.Interfaces.Repositories
 {
     public interface IEmployeeRepository
     {
-        Task<EmployeeEntity?> Load(Guid id);
+        Task<EmployeeEntity?> Load(int id);
 
         Task<EmployeeEntity> LoadByDocumentNumber(string documentNumber);
 
@@ -17,7 +17,7 @@ namespace EmployeeManager.Domain.Interfaces.Repositories
 
         Task<EmployeeEntity> Save(EmployeeEntity documentModel);
 
-        Task<bool> Delete(Guid id);
+        Task<bool> Delete(int id);
         
     }
 }

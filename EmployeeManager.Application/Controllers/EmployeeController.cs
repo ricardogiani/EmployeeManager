@@ -52,7 +52,7 @@ namespace EmployeeManager.Application.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmployeeDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<EmployeeDto>> Get(Guid id)
+        public async Task<ActionResult<EmployeeDto>> Get(int id)
         {
             _logger.LogInformation($"Get {id}");
             var employee = await _employeeService.GetById(id);
@@ -94,7 +94,7 @@ namespace EmployeeManager.Application.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmployeeDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<EmployeeDto>> Put(Guid id, [FromBody] EmployeeDto employeeDto)
+        public async Task<ActionResult<EmployeeDto>> Put(int id, [FromBody] EmployeeDto employeeDto)
         {
             _logger.LogInformation($"[Put] DocumentNumber: {employeeDto.DocumentNumber}");
             // Validação básica: verifica se o ID na rota corresponde ao ID no corpo da requisição (se houver).
@@ -118,7 +118,7 @@ namespace EmployeeManager.Application.Controllers
         [HttpDelete("{id}")] // Atributo para indicar que este é um endpoint HTTP DELETE com um parâmetro de rota 'id'
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> Delete(Guid id)
+        public async Task<ActionResult> Delete(int id)
         {
             var deleted = await _employeeService.Delete(id);
             if (!deleted)

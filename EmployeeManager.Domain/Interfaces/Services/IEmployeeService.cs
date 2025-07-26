@@ -11,14 +11,14 @@ namespace EmployeeManager.Domain.Interfaces.Services
     {
         public Task<EmployeeEntity> Create(EmployeeEntity employeeEntity);
 
-        public Task<EmployeeEntity> Update(Guid id, EmployeeEntity employeeEntity);
+        public Task<EmployeeEntity> Update(int id, EmployeeEntity employeeEntity);
 
         public Task<IEnumerable<EmployeeEntity>> Get(EmployeeFilterRequest filter);
 
-        public Task<EmployeeEntity> GetById(Guid id);
+        public Task<EmployeeEntity> GetById(int id);
 
         public Task<EmployeeEntity> ChangePassword(string plainPassword, string newPlainPassword);
 
-        public Task<bool> Delete(Guid id);
+        public Task<bool> Delete(int id);
     }
 }
