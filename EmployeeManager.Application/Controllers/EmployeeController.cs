@@ -53,6 +53,7 @@ namespace EmployeeManager.Application.Controllers
         /// Retorna um funcionário
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmployeeDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -77,6 +78,7 @@ namespace EmployeeManager.Application.Controllers
         /// </summary>
         /// <param name="employeeDto">Os dados do novo funcionário.</param>
         /// <returns>O EmployeeDto criado com o ID atribuído e a URL para acessá-lo.</returns>
+        [Authorize]
         [HttpPost] // Atributo para indicar que este é um endpoint HTTP POST
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(EmployeeDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -96,6 +98,7 @@ namespace EmployeeManager.Application.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EmployeeDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -128,6 +131,7 @@ namespace EmployeeManager.Application.Controllers
             }
         }
         
+        [Authorize]
         [HttpDelete("{id}")] // Atributo para indicar que este é um endpoint HTTP DELETE com um parâmetro de rota 'id'
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
