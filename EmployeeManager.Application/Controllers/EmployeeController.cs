@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using EmployeeManager.Application.Dtos;
 using EmployeeManager.Domain.Entities;
+using EmployeeManager.Domain.Exceptions;
 using EmployeeManager.Domain.Interfaces.Services;
 using EmployeeManager.Domain.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManager.Application.Controllers
@@ -32,6 +34,8 @@ namespace EmployeeManager.Application.Controllers
         /// Retorna todos os funcionários.        
         /// </summary>
         /// <returns>Uma lista de EmployeeDto.</returns>
+        /// 
+        [Authorize]
         [HttpGet] // Atributo para indicar que este é um endpoint HTTP GET
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<EmployeeDto>))]
         public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetAll()
@@ -78,16 +82,18 @@ namespace EmployeeManager.Application.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<EmployeeDto>> Post([FromBody] EmployeeDto employeeDto)
         {
-            _logger.LogInformation($"[Post] DocumentNumber: {employeeDto.DocumentNumber}");
-            if (employeeDto == null || string.IsNullOrWhiteSpace(employeeDto.DocumentNumber))
+            _logger.LogInformation($"[Post] DocumentNumber: {employeeDto?.DocumentNumber}");
+            try
             {
-                return BadRequest("Insuficient Data to create Employee");
-            }
+                var employee = _mapper.Map<EmployeeEntity>(employeeDto);
+                var createdEmployee = await _employeeService.Create(employee);
 
-            var employee = _mapper.Map<EmployeeEntity>(employeeDto);
-            var createdEmployee = await _employeeService.Create(employee);
-            
-            return CreatedAtAction(nameof(Get), new { id = createdEmployee.Id }, createdEmployee);
+                return CreatedAtAction(nameof(Get), new { id = createdEmployee.Id }, createdEmployee);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(ex.Errors);
+            }
         }
 
         [HttpPut("{id}")]
@@ -96,25 +102,32 @@ namespace EmployeeManager.Application.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<EmployeeDto>> Put(int id, [FromBody] EmployeeDto employeeDto)
         {
-            _logger.LogInformation($"[Put] DocumentNumber: {employeeDto.DocumentNumber}");
-            // Validação básica: verifica se o ID na rota corresponde ao ID no corpo da requisição (se houver).
-            // Isso ajuda a evitar confusão e erros de cliente.
-            if (employeeDto == null || employeeDto.Id != id)
+            _logger.LogInformation($"[Put] DocumentNumber: {employeeDto?.DocumentNumber}");
+
+            try
             {
-                return BadRequest("ID do funcionário no corpo da requisição não corresponde ao ID da rota ou dados inválidos.");
+                // Validação básica: verifica se o ID na rota corresponde ao ID no corpo da requisição (se houver).
+                // Isso ajuda a evitar confusão e erros de cliente.
+                if (employeeDto == null || employeeDto.Id != id)
+                {
+                    return BadRequest("ID do funcionário no corpo da requisição não corresponde ao ID da rota ou dados inválidos.");
+                }
+
+                var employee = _mapper.Map<EmployeeEntity>(employeeDto);
+                var updatedEmployee = await _employeeService.Update(id, employee);                
+
+                return Ok(new EmployeeDto());
             }
-
-            var employee = _mapper.Map<EmployeeEntity>(employeeDto);
-            var updatedEmployee = await _employeeService.Update(id, employee);
-
-            if (updatedEmployee == null)
+            catch (NotFoundException ex)
             {
-                return NotFound($"Employee with ID {id} not found");
+                return NotFound(ex.Message);
             }
-
-            return Ok(new EmployeeDto());
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(ex.Errors);
+            }
         }
-
+        
         [HttpDelete("{id}")] // Atributo para indicar que este é um endpoint HTTP DELETE com um parâmetro de rota 'id'
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
