@@ -8,9 +8,34 @@ using EmployeeManager.Domain.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 public static class SetupProgram
 {
+
+    static public void ConfigureLog(WebApplicationBuilder builder)
+    {
+        try
+        {
+
+            var fileLogPath = builder.Configuration["Log:FilePath"];
+            var logLevel = builder.Configuration["Log:Level"];
+
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File(fileLogPath, rollingInterval: RollingInterval.Day)
+                .WriteTo.Console()
+                .MinimumLevel.Is((Serilog.Events.LogEventLevel)int.Parse(logLevel))
+                .CreateLogger();
+
+            builder.Services.AddSerilog();
+        }
+        catch (System.Exception ex)
+        {
+            Console.WriteLine(ex.StackTrace);
+            throw;
+        }
+    }
+
     static public void ConfigureServicesApp(IServiceCollection services)
     {
         services.AddSingleton<IAdapterConfig, AdapterConfig>();

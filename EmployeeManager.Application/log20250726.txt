@@ -1,0 +1,6 @@
+2025-07-26 16:24:32.601 -03:00 [INF] User profile is available. Using 'C:\Users\Ricardo\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-07-26 16:24:32.878 -03:00 [INF] Now listening on: http://localhost:5148
+2025-07-26 16:24:32.883 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-07-26 16:24:32.883 -03:00 [INF] Hosting environment: Development
+2025-07-26 16:24:32.884 -03:00 [INF] Content root path: C:\Users\Ricardo\OneDrive\Documents\Projetos\EmployeeManager\EmployeeManager.Application
+2025-07-26 16:25:41.122 -03:00 [INF] Application is shutting down...

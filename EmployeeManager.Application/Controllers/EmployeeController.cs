@@ -117,7 +117,7 @@ namespace EmployeeManager.Application.Controllers
                 }
 
                 var employee = _mapper.Map<EmployeeEntity>(employeeDto);
-                var updatedEmployee = await _employeeService.Update(id, employee);                
+                var updatedEmployee = await _employeeService.Update(id, employee);
 
                 return Ok(new EmployeeDto());
             }
@@ -130,7 +130,7 @@ namespace EmployeeManager.Application.Controllers
                 return BadRequest(ex.Errors);
             }
         }
-        
+
         [Authorize]
         [HttpDelete("{id}")] // Atributo para indicar que este é um endpoint HTTP DELETE com um parâmetro de rota 'id'
         [ProducesResponseType(StatusCodes.Status204NoContent)]
