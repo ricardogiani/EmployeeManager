@@ -58,8 +58,15 @@ namespace EmployeeManager.Domain.Services
 
         public async Task<EmployeeEntity> Update(int id, EmployeeEntity employee)
         {
+            var employeeToUpdate = await _employeeRepository.Load(id);
+            if (employeeToUpdate == null)
+                throw new NotFoundException($"Employee id {id} not found");
+
             await BusinessValidate(employee);
 
+            employee.UpdatedAt = DateTime.Now;
+            employee.CreatedAt = employeeToUpdate.CreatedAt;
+            
             var result = await _employeeRepository.Save(employee);
 
             return result;
@@ -67,9 +74,11 @@ namespace EmployeeManager.Domain.Services
 
         private async Task BusinessValidate(EmployeeEntity employee)
         {
-            var validBirthDate = employee.BusinessValidateBirthDate();
-            var validUniqueDocument = await BusinessValidateUniqueDocument(employee);
+            bool isNewEmployee = employee.Id == 0;
+
+            var validBirthDate = employee.BusinessValidateBirthDate();                        
             var ValidJobLevel = BusinessValidateJobLevel(employee);
+            var validUniqueDocument = isNewEmployee ? await BusinessValidateUniqueDocument(employee) : true;
 
             if (validBirthDate && validUniqueDocument && ValidJobLevel) return;
 

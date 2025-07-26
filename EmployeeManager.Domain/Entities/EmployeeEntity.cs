@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using EmployeeManager.Domain.Enums;
 using System.Text.RegularExpressions;
 using EmployeeManager.Domain.Exceptions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EmployeeManager.Domain.Entities
 {
@@ -45,11 +46,12 @@ namespace EmployeeManager.Domain.Entities
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }
 
-        public DateTime? CreatedAt { get; set; }
-        
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+
         public DateTime? UpdatedAt { get; set; }
 
-        public EmployeeEntity() { }
+        public EmployeeEntity() {}
+        
 
         public EmployeeEntity(string firstName, string lastName, string email, string documentNumber)
         {
