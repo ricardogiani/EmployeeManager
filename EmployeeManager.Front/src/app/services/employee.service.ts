@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -5,6 +6,9 @@ import { Injectable } from '@angular/core';
 })
 export class EmployeeService {
 
-constructor() { }
+  // URL base da sua API. Substitua pelo endereço real do seu backend.
+  private apiUrl = 'https://sua-api.com/api/employees';
+  
+  constructor(private http: HttpClient) { }
 
 }

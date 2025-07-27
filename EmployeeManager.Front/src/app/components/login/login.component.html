@@ -1,3 +1,34 @@
-<p>
-  login works!
-</p>
+<div>
+  <h2>Login</h2>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="username">Usuário</label>
+      <input id="username" type="text" formControlName="username" placeholder="Digite seu usuário" />
+      <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="error">
+        O campo usuário é obrigatório.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Senha</label>
+      <input id="password" type="password" formControlName="password" placeholder="Digite sua senha" />
+      <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error">
+        A senha deve ter pelo menos 8 caracteres.
+      </div>
+    </div>
+
+    <div *ngIf="loginError">{{ loginError }}</div>
+
+    <button type="submit" [disabled]="loginForm.invalid || loading">
+      <span *ngIf="loading">Carregando...</span>
+      <span *ngIf="!loading">Entrar</span>
+    </button>
+  </form>
+
+<!--  <div>
+    <a href="/forgot-password">Esqueceu a senha?</a>
+    <a href="/register">Criar conta</a>
+  </div>
+  -->
+</div>
