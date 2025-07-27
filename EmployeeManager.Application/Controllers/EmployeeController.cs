@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using EmployeeManager.Application.Dtos;
@@ -39,7 +40,7 @@ namespace EmployeeManager.Application.Controllers
         [HttpGet] // Atributo para indicar que este é um endpoint HTTP GET
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<EmployeeDto>))]
         public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetAll()
-        {
+        {           
             _logger.LogInformation("Get All Employee");
 
             var employees = await _employeeService.Get(new EmployeeFilterRequest());
@@ -88,13 +89,17 @@ namespace EmployeeManager.Application.Controllers
             try
             {
                 var employee = _mapper.Map<EmployeeEntity>(employeeDto);
-                var createdEmployee = await _employeeService.Create(employee);
+                var createdEmployee = await _employeeService.Create(employee, employeeDto.Password);
 
                 return CreatedAtAction(nameof(Get), new { id = createdEmployee.Id }, createdEmployee);
             }
             catch (BusinessRuleValidationException ex)
             {
                 return BadRequest(ex.Errors);
+            }
+            catch (InvalidPasswordException ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 

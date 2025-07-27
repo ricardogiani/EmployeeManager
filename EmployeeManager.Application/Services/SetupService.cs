@@ -10,7 +10,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
-public static class SetupProgram
+namespace EmployeeManager.Application.Services;
+
+public static class SetupService
 {
 
     static public void ConfigureLog(WebApplicationBuilder builder)
@@ -36,13 +38,17 @@ public static class SetupProgram
         }
     }
 
+    static public void ConfigureAdaptersApp(IServiceCollection services)
+    {
+        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        services.AddSingleton<IAdapterConfig, AdapterConfig>();
+    }
+
     static public void ConfigureServicesApp(IServiceCollection services)
     {
-        services.AddSingleton<IAdapterConfig, AdapterConfig>();
         services.AddScoped<IEmployeeService, EmployeeService>();
-        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-        services.AddScoped<IAuthService, AuthService>();
-        services.AddHostedService<StartupService>();
+        services.AddScoped<IAuthProviderService, AuthProviderService>();
+        services.AddScoped<ILoginService, LoginService>();
     }
 
     static public void ConfigureSwagger(IServiceCollection services)
@@ -94,6 +100,7 @@ public static class SetupProgram
         {
             options.RequireHttpsMetadata = false;
             options.SaveToken = true;
+
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = false,

@@ -53,7 +53,7 @@ namespace EmployeeManager.Test
 
             await Assert.ThrowsExceptionAsync<BusinessRuleValidationException>(async () =>
                 {
-                    await service.Create(employeeToCreate);
+                    await service.Create(employeeToCreate, string.Empty);
                 }
             );
 
@@ -95,7 +95,7 @@ namespace EmployeeManager.Test
 
             EmployeeService service = new EmployeeService(repoMock.Object);
 
-            var newEmployeeCreated = await service.Create(employeeToCreate);
+            var newEmployeeCreated = await service.Create(employeeToCreate, string.Empty);
 
             Assert.IsTrue(newEmployeeCreated != null, "Employe created");
 
@@ -217,12 +217,59 @@ namespace EmployeeManager.Test
 
             var exception = await Assert.ThrowsExceptionAsync<BusinessRuleValidationException>(async () =>
                 {
-                    var newEmployeeCreated = await service.Create(employeeToCreate);
+                    var newEmployeeCreated = await service.Create(employeeToCreate, string.Empty);
                 }, "Assert BusinessRuleValidationException Ok"
             );
 
             Assert.IsTrue(exception.Errors.Where(message => (message == BusinessRuleValidationMessages.MessageBirthDate)).Any());
 
-        }       
+        }
+
+        [TestMethod]
+        public async Task CreateEmployee_ShouldExceptions_InvalidPassword()
+        {
+            var faker = new Faker<EmployeeEntity>()
+                .CustomInstantiator(f =>
+                {
+                    var employee = new EmployeeEntity(
+                        f.Person.FirstName,
+                        f.Person.LastName,
+                        f.Internet.Email(),
+                        f.Person.Cpf()
+                    );
+
+                    employee.JobLevel = Domain.Enums.JobLevelEnum.Analyst;
+                    employee.BirthDate = DateTime.Now.Date.AddYears(-17); // Not adult
+
+                    return employee;
+                });
+
+            var newInvalidPassword = "12345678";
+
+            // user analyst
+            EmployeeEntity user = faker.Generate();
+
+            EmployeeEntity employeeToCreate = faker.Generate();
+
+            Console.WriteLine($"Data nascimento: {employeeToCreate.BirthDate}");
+
+            employeeToCreate.JobLevel = Domain.Enums.JobLevelEnum.Intern;
+
+            var repoMock = new Mock<IEmployeeRepository>();
+
+            repoMock.Setup(repo => repo.Query(new EmployeeFilterRequest()))
+                    .ReturnsAsync([]);
+
+            repoMock.Setup(repo => repo.Save(employeeToCreate))
+                      .ReturnsAsync(employeeToCreate);
+
+            EmployeeService service = new EmployeeService(repoMock.Object);
+
+            var exception = await Assert.ThrowsExceptionAsync<BusinessRuleValidationException>(async () =>
+                {
+                    var newEmployeeCreated = await service.Create(employeeToCreate, newInvalidPassword);
+                }, "Assert InvalidPasswordException Ok"
+            );
+        }
     }
 }

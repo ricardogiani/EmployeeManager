@@ -6,22 +6,22 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace EmployeeManager.Application.Services;
 
-public interface IAuthService
+public interface IAuthProviderService
 {
-    string GenerateJwtToken(string userName);
+    string GenerateJwtToken(string userName, string customId);
 }
 
-public class AuthService : IAuthService
+public class AuthProviderService : IAuthProviderService
 {
 
     private readonly IConfiguration _configuration;
 
-    public AuthService(IConfiguration configuration)
+    public AuthProviderService(IConfiguration configuration)
     {
         _configuration = configuration;
     }
 
-    public string GenerateJwtToken(string userName)
+    public string GenerateJwtToken(string userName, string customId)
     {
         var jwtSecret = _configuration["Jwt:Secret"];
 
@@ -31,9 +31,10 @@ public class AuthService : IAuthService
         {
             Subject = new ClaimsIdentity(new[]
             {
-                    new Claim(ClaimTypes.Name, userName)
+                    new Claim(ClaimTypes.Name, userName),
+                    new Claim(ClaimTypes.NameIdentifier, customId)
                 }),
-            Expires = DateTime.UtcNow.AddMinutes(30),
+            Expires = DateTime.UtcNow.AddMinutes(60),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
 

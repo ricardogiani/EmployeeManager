@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EmployeeManager.Application
+namespace EmployeeManager.Application.Services
 {
     public class StartupService : IHostedService
     {
@@ -19,7 +19,9 @@ namespace EmployeeManager.Application
         public Task StartAsync(CancellationToken cancellationToken)
         {
             Console.WriteLine("StartupService: Iniciando...");
-            _adapterConfig.Config(); // Chama o método de configuração do seu adapter
+
+            _adapterConfig.Config();
+
             Console.WriteLine("StartupService: Concluído o StartAsync.");
             return Task.CompletedTask; // Retorna um Task.CompletedTask para operações síncronas
         }

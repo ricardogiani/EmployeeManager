@@ -13,6 +13,8 @@ namespace EmployeeManager.Domain.Services
 {
     public class EmployeeService : IEmployeeService
     {
+        private (int Id, string userName) loggedInEmployee;
+
         private readonly IEmployeeRepository _employeeRepository;
         //private readonly ILogger<EmployeeService> _logger;
 
@@ -21,14 +23,24 @@ namespace EmployeeManager.Domain.Services
             _employeeRepository = employeeRepository;
         }
 
+        public async Task CreatePassword(EmployeeEntity newEmployee, string plainPassword)
+        {
+            newEmployee.GeneratePassword(plainPassword);
+
+            await _employeeRepository.Save(newEmployee);
+        }
+
         public Task<EmployeeEntity> ChangePassword(string plainPassword, string newPlainPassword)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<EmployeeEntity> Create(EmployeeEntity newEmployee)
+        public async Task<EmployeeEntity> Create(EmployeeEntity newEmployee, string plainPassword)
         {
             await BusinessValidate(newEmployee);
+
+            if (!string.IsNullOrEmpty(plainPassword))
+                newEmployee.GeneratePassword(plainPassword);
 
             var created = await _employeeRepository.Save(newEmployee);
 
@@ -77,7 +89,7 @@ namespace EmployeeManager.Domain.Services
             bool isNewEmployee = employee.Id == 0;
 
             var validBirthDate = employee.BusinessValidateBirthDate();                        
-            var ValidJobLevel = BusinessValidateJobLevel(employee);
+            var ValidJobLevel = await BusinessValidateJobLevel(employee);
             var validUniqueDocument = isNewEmployee ? await BusinessValidateUniqueDocument(employee) : true;
 
             if (validBirthDate && validUniqueDocument && ValidJobLevel) return;
@@ -102,12 +114,16 @@ namespace EmployeeManager.Domain.Services
             return find == null;
         }
 
-        private bool BusinessValidateJobLevel(EmployeeEntity newEmployee)
+        private async Task<bool> BusinessValidateJobLevel(EmployeeEntity newEmployee)
         {
-            // TODO
-            EmployeeEntity userEntity = new EmployeeEntity() { JobLevel = Enums.JobLevelEnum.Coordinator };
+            var loggedEmployee = await _employeeRepository.Load(loggedInEmployee.Id);
 
-            return (int)userEntity.JobLevel >= (int)newEmployee.JobLevel;
+             return (int)loggedEmployee.JobLevel >= (int)newEmployee.JobLevel;
+        }
+
+        public void SetLoggedInEmployee(int id, string userName)
+        {
+            loggedInEmployee = (id, userName);
         }
     }
 }

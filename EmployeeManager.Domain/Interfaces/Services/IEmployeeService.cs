@@ -9,7 +9,8 @@ namespace EmployeeManager.Domain.Interfaces.Services
 {
     public interface IEmployeeService
     {
-        public Task<EmployeeEntity> Create(EmployeeEntity employeeEntity);
+
+        public Task<EmployeeEntity> Create(EmployeeEntity newEmployee, string plainPassword);
 
         public Task<EmployeeEntity> Update(int id, EmployeeEntity employeeEntity);
 
@@ -17,8 +18,8 @@ namespace EmployeeManager.Domain.Interfaces.Services
 
         public Task<EmployeeEntity> GetById(int id);
 
-        public Task<EmployeeEntity> ChangePassword(string plainPassword, string newPlainPassword);
-
         public Task<bool> Delete(int id);
+
+        public void SetLoggedInEmployee(int id, string userName);
     }
 }

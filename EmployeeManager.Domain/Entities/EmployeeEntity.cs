@@ -41,8 +41,7 @@ namespace EmployeeManager.Domain.Entities
 
         public int? ManagerId { get; set; }
         public EmployeeEntity? Manager { get; set; }
-
-        // Store hashed password and salt for security
+        
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }
 
@@ -92,7 +91,7 @@ namespace EmployeeManager.Domain.Entities
         public void GeneratePassword(string plainPassword)
         {
             if (!IsValidPlainPassword(plainPassword))
-                throw new ArgumentException("Password not permited");
+                throw new InvalidPasswordException("Password not permited");
 
             (PasswordHash, PasswordSalt) = GeneratePasswordHash(plainPassword);
         }
@@ -124,17 +123,17 @@ namespace EmployeeManager.Domain.Entities
             return (hash, salt);
         }
 
-        public bool VerifyPassword(string password, string storedHash, string storedSalt)
+        public bool AuthenticatePassword(string password)
         {
             if (string.IsNullOrWhiteSpace(password))
                 throw new ArgumentException("Password cannot be empty");
-            if (string.IsNullOrWhiteSpace(storedHash))
+            if (string.IsNullOrWhiteSpace(this.PasswordHash))
                 throw new ArgumentException("Stored hash cannot be empty");
-            if (string.IsNullOrWhiteSpace(storedSalt))
+            if (string.IsNullOrWhiteSpace(this.PasswordSalt))
                 throw new ArgumentException("Stored salt cannot be empty");
 
             // Converte o salt armazenado de volta para bytes
-            byte[] saltBytes = Convert.FromBase64String(storedSalt);
+            byte[] saltBytes = Convert.FromBase64String(this.PasswordSalt);
 
             // Aplica a mesma função de derivação de chave na senha fornecida pelo usuário
             // e no salt armazenado.
@@ -147,7 +146,7 @@ namespace EmployeeManager.Domain.Entities
 
             // Compara o hash recém-gerado com o hash armazenado
             // Recomenda-se usar uma comparação segura para evitar ataques de tempo (timing attacks)
-            return SlowEquals(newHash, storedHash);
+            return SlowEquals(newHash, PasswordHash);
         }
 
         public bool BusinessValidateBirthDate()

@@ -1,5 +1,8 @@
 using EmployeeManager.Adapter.Mappers;
+using EmployeeManager.Application;
 using EmployeeManager.Application.Mappers;
+using EmployeeManager.Application.Middlewares;
+using EmployeeManager.Application.Services;
 using Serilog;
 
 
@@ -11,21 +14,21 @@ internal class Program
         {
             var builder = WebApplication.CreateBuilder(args);
             
-            SetupProgram.ConfigureLog(builder);
+            SetupService.ConfigureLog(builder);                        
+            SetupService.ConfigureAdaptersApp(builder.Services);
+            SetupService.ConfigureServicesApp(builder.Services);
+            SetupService.ConfigureSwagger(builder.Services);
+            SetupService.ConfigureAuth(builder);
+            builder.Services.AddHostedService<StartupService>();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddControllers();
-
             builder.Services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile<EmployeeMappingProfile>();
                 cfg.AddProfile<EmployeeDataMappingProfile>();
             });
-
-            SetupProgram.ConfigureServicesApp(builder.Services);
-            SetupProgram.ConfigureSwagger(builder.Services);
-            SetupProgram.ConfigureAuth(builder);
 
             var app = builder.Build();
 
@@ -37,9 +40,12 @@ internal class Program
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
             app.UseAuthentication();
+
+            // Middleware to access claims
+            app.UseMiddleware<CustomInterceptorMiddleware>();
+
             app.UseAuthorization();
             app.MapControllers();
             app.UseCors(cors => cors.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EmployeeManager.Application.Dtos;
 using EmployeeManager.Application.Services;
+using EmployeeManager.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManager.Application.Controllers
@@ -12,19 +13,24 @@ namespace EmployeeManager.Application.Controllers
     [Route("api/[controller]")]
     public class LoginController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly IAuthProviderService _authService;
+        private readonly ILoginService _loginService;
 
-        public LoginController(IAuthService authService)
+        public LoginController(IAuthProviderService authService, ILoginService loginService)
         {
+            _loginService = loginService;
             _authService = authService;            
         }
 
-        [HttpPost]
-        public IActionResult Login([FromBody] LoginRequestDto request)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
-            if (request.UserName == "admin" && request.Password == "123456")
+
+            (var authenticated, var customId) = await _loginService.Login(request.UserName, request.Password);
+
+            if (authenticated)
             {
-                var token = _authService.GenerateJwtToken(request.UserName);
+                var token = _authService.GenerateJwtToken(request.UserName, customId.ToString());
                 return Ok(new { token });
             }
             return Unauthorized("Usuário ou senha inválidos");
