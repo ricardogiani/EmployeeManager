@@ -89,9 +89,12 @@ namespace EmployeeManager.Application.Controllers
             try
             {
                 var employee = _mapper.Map<EmployeeEntity>(employeeDto);
-                var createdEmployee = await _employeeService.Create(employee, employeeDto.Password);
 
-                return CreatedAtAction(nameof(Get), new { id = createdEmployee.Id }, createdEmployee);
+                var employeeCreated = await _employeeService.Create(employee, employeeDto.Password);
+
+                var employeeResponse = _mapper.Map<EmployeeDto>(employeeCreated);
+
+                return CreatedAtAction(nameof(Get), new { id = employeeResponse.Id }, employeeResponse);
             }
             catch (BusinessRuleValidationException ex)
             {
@@ -124,7 +127,9 @@ namespace EmployeeManager.Application.Controllers
                 var employee = _mapper.Map<EmployeeEntity>(employeeDto);
                 var updatedEmployee = await _employeeService.Update(id, employee);
 
-                return Ok(new EmployeeDto());
+                var employeeResponse = _mapper.Map<EmployeeDto>(updatedEmployee);
+
+                return Ok(employeeResponse);
             }
             catch (NotFoundException ex)
             {
