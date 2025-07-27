@@ -33,10 +33,7 @@ namespace EmployeeManager.Test
                     employee.BirthDate = DateTime.Now.Date.AddYears(-19);
 
                     return employee;
-                });
-
-            // user analyst
-            EmployeeEntity user = faker.Generate();
+                });            
 
             EmployeeEntity employeeToCreate = faker.Generate();
             employeeToCreate.JobLevel = Domain.Enums.JobLevelEnum.Director;
@@ -49,7 +46,15 @@ namespace EmployeeManager.Test
             repoMock.Setup(repo => repo.Save(employeeToCreate))
                       .ReturnsAsync(employeeToCreate);
 
+            EmployeeEntity user = faker.Generate();
+            int id_to_find = user.Id;
+            repoMock.Setup(repo => repo.Load(id_to_find))
+                      .ReturnsAsync(user);
+
             EmployeeService service = new EmployeeService(repoMock.Object);
+            // user analyst
+            
+            service.SetLoggedInEmployee(user.Id, user.Email);
 
             await Assert.ThrowsExceptionAsync<BusinessRuleValidationException>(async () =>
                 {
@@ -132,7 +137,6 @@ namespace EmployeeManager.Test
             repoMock.Setup(repo => repo.Load(id_to_find))
                       .ReturnsAsync(employeeToFind);
 
-            // TODO simular os metodos do repoMock
             EmployeeService service = new EmployeeService(repoMock.Object);
 
             var remployeeResult = await service.GetById(id_to_find);

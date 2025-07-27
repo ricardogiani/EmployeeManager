@@ -1,0 +1,2 @@
+INSERT INTO "employees" ("active", "first_name", "last_name", "email", "document_number", "phone_number", "birth_date", "job_level", "manager_id", "password_hash", "password_salt", "created_at", "updated_at") VALUES
+('1',	'Admin',	'Company',	'admin@company.com',	'069',	'34-991430322',	'2000-07-27',	5,	NULL,	'HcLv+8zeUZM24P0C2XbP+peibChOFsWU5hG4e9OJTTA=',	'ON0m52wVj4GKk5eQtCVmDQ==',	'2025-07-27 03:15:22.413721+00',	NULL);

@@ -118,7 +118,7 @@ namespace EmployeeManager.Domain.Services
         {
             var loggedEmployee = await _employeeRepository.Load(loggedInEmployee.Id);
 
-             return (int)loggedEmployee.JobLevel >= (int)newEmployee.JobLevel;
+            return (int)loggedEmployee.JobLevel >= (int)newEmployee.JobLevel;
         }
 
         public void SetLoggedInEmployee(int id, string userName)
