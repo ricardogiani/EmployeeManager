@@ -1,0 +1,42 @@
+<div *ngIf="employees && employees.length > 0">
+  <table border="1" style="width:100%; border-collapse: collapse;">
+    <thead>
+      <tr style="background-color: #f2f2f2;">
+        <th style="padding: 8px; text-align: left;">ID</th>
+        <th style="padding: 8px; text-align: left;">Nome</th>
+        <th style="padding: 8px; text-align: left;">Sobrenome</th>
+        <th style="padding: 8px; text-align: left;">Email</th>
+        <th style="padding: 8px; text-align: left;">Documento</th>
+        <th style="padding: 8px; text-align: left;">Data Nasc.</th>
+        <th style="padding: 8px; text-align: left;">Nível</th>
+        <th style="padding: 8px; text-align: left;">Telefone</th>
+        <th style="padding: 8px; text-align: left;">Ativo</th>
+        <th style="padding: 8px; text-align: left;">Gerente ID</th>
+        <th style="padding: 8px; text-align: left;">Criado Em</th>
+        <th style="padding: 8px; text-align: left;">Atualizado Em</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let employee of employees">
+        <td style="padding: 8px;">{{ employee.id }}</td>
+        <td style="padding: 8px;">{{ employee.firstName }}</td>
+        <td style="padding: 8px;">{{ employee.lastName }}</td>
+        <td style="padding: 8px;">{{ employee.email }}</td>
+        <td style="padding: 8px;">{{ employee.documentNumber }}</td>
+        <td style="padding: 8px;">{{ employee.birthDate | date:'dd/MM/yyyy' }}</td>
+        <td style="padding: 8px;">
+          {{ employee.jobLevel !== undefined ? JobLevelEnum[employee.jobLevel] : 'N/A' }}
+        </td>
+        <td style="padding: 8px;">{{ employee.phoneNumber }}</td>
+        <td style="padding: 8px;">{{ employee.active ? 'Sim' : 'Não' }}</td>
+        <td style="padding: 8px;">{{ employee.managerId || 'N/A' }}</td>
+        <td style="padding: 8px;">{{ employee.createdAt | date:'dd/MM/yyyy hh:mm:ss' }}</td>
+        <td style="padding: 8px;">{{ employee.updatedAt | date:'dd/MM/yyyy hh:mm:ss' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="!employees || employees.length === 0">
+  <p>Nenhum funcionário para exibir.</p>
+</div>

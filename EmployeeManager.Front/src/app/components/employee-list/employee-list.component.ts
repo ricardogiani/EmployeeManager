@@ -1,26 +1,34 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { EmployeeService } from '../../services/employee.service';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { EmployeeService } from '../../services/employee/employee.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Employee } from '../../interfaces/employee';
+import { EmployeeTableComponent } from '../employee-table/employee-table.component';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-employee-list',
   standalone: true,
   imports:[
     CommonModule,
-    FormsModule // <--- Add FormsModule to your imports array!
+    RouterLink,
+    FormsModule,
+    EmployeeTableComponent
   ],
   templateUrl: './employee-list.component.html',
   styleUrls: ['./employee-list.component.css']
 })
 export class EmployeeListComponent implements OnInit {
 
-  inputSearch: string = '';  
+  inputSearch: string = 'ricardogiani@gmail.com';  
+
+  employeeId = signal('1');
+
+  employees: Employee[] = [];
 
   private employeeService = inject(EmployeeService);
 
-  constructor() { }
+  constructor(private router: Router,) { }
 
   ngOnInit() {
 
@@ -29,7 +37,7 @@ export class EmployeeListComponent implements OnInit {
   employeesFind(typeFilter: string)
   {
     //alert(typeFilter);    
-    console.log(`search employees ${typeFilter}`);
+    console.log(`search employees type: ${typeFilter}, value: ${this.inputSearch}`);
 
     if (typeFilter == 'email')
       this.employeeService.get({ email: this.inputSearch }).subscribe({
@@ -37,7 +45,8 @@ export class EmployeeListComponent implements OnInit {
       next: (data: Employee[]) => {
         //this.foundEmployees = data; // Atribui os dados recebidos à sua propriedade
         //this.loading = false;
-        console.log('Dados recebidos com sucesso:', data);
+        this.employees = data;
+        console.log('Dados recebidos com sucesso:', this.employees);
       },
       // 2. Bloco `error`: Executado se a requisição falhar (erro HTTP, erro de rede, etc.).
       error: (err: any) => { // 'err' é o erro propagado do seu service (HttpErrorResponse ou Error)
@@ -54,6 +63,10 @@ export class EmployeeListComponent implements OnInit {
     });
 
 
+  }
+
+  newEmployee(){
+    this.router.navigate(['/employee']);
   }
 
 }

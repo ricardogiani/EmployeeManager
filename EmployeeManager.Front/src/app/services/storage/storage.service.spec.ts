@@ -1,16 +1,16 @@
 /* tslint:disable:no-unused-variable */
 
 import { TestBed, async, inject } from '@angular/core/testing';
-import { LocalDataService } from './local-data.service';
+import { StorageService } from './storage.service';
 
 describe('Service: LocalData', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [LocalDataService]
+      providers: [StorageService]
     });
   });
 
-  it('should ...', inject([LocalDataService], (service: LocalDataService) => {
+  it('should ...', inject([StorageService], (service: StorageService) => {
     expect(service).toBeTruthy();
   }));
 });

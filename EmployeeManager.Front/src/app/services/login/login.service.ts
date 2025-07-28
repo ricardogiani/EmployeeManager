@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { LocalDataService } from './local-data.service';
+import { StorageService } from '../storage/storage.service';
 
 export class LoginResponse {
   message?: string;
@@ -19,7 +19,7 @@ export class LoginService {
   private apiUrl = 'http://localhost:5148/api/Login';
 
 
-  private localDataService = inject(LocalDataService);
+  private storageService = inject(StorageService);
   
   constructor(private http: HttpClient) { }
 
@@ -35,9 +35,9 @@ export class LoginService {
         // Opcional: usar 'tap' para fazer algo com a resposta antes de passá-la adiante
         tap(response => {
 
-            this.localDataService.saveData("username", username);
-            this.localDataService.saveData("logged", "true");
-            this.localDataService.saveData("token", response.token as string);   
+            this.storageService.saveData("username", username);
+            this.storageService.saveData("logged", "true");
+            this.storageService.saveData("token", response.token as string);   
 
             response.token = "";
             response.sucess = true;

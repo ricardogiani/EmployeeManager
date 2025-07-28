@@ -1,8 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { LoginService } from '../../services/login.service';
+import { LoginService } from '../../services/login/login.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { LocalDataService } from '../../services/local-data.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -24,7 +23,6 @@ export class LoginComponent implements OnInit {
   password = signal('');*/
 
   private loginService = inject(LoginService);
-  //private localDataService = inject(LocalDataService);
 
   loading: boolean = false;
   

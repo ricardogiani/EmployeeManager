@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Employee } from '../interfaces/employee';
+import { Employee } from '../../interfaces/employee';
 import { map, Observable, throwError } from 'rxjs';
-import { EmployeeFilter } from '../interfaces/employee-filter';
-import { LocalDataService } from './local-data.service';
+import { EmployeeFilter } from '../../interfaces/employee-filter';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,14 +13,14 @@ export class EmployeeService {
   // URL base da sua API. Substitua pelo endereço real do seu backend.
   private apiUrl = 'http://localhost:5148/api/employee';
 
-  private localDataService = inject(LocalDataService);
+  private storageService = inject(StorageService);
 
   constructor(private http: HttpClient) { }
 
 
   private getAuthorizeHeader() : any
   {
-    const token = this. localDataService.getData("token");
+    const token = this. storageService.getData("token");
     return {
       Authorization: `bearer  ${token}`
     }

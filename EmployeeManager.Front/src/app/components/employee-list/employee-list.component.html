@@ -8,6 +8,15 @@
   <button class="primary" type="button" (click)="employeesFind('document')">Search by Document</button>
   <button class="primary" type="button" (click)="employeesFind('email')">Search by Email</button>
   <button class="primary" type="button" (click)="employeesFind('all')">Search All</button>
+  <button class="primary" type="button" (click)="newEmployee()">New Employee</button>
+
+  <a [routerLink]="['/employee', employeeId()]">Edit Employe</a>
   
 </div>
+
+<div>
+  <app-employee-table [employees]="employees"></app-employee-table>
+  {{employees |json}}
+</div>
+
 
