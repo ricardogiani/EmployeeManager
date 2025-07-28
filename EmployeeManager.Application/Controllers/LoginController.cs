@@ -22,18 +22,30 @@ namespace EmployeeManager.Application.Controllers
             _authService = authService;            
         }
 
-        [HttpPost("login")]
+        [HttpPost()]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
-
-            (var authenticated, var customId) = await _loginService.Login(request.UserName, request.Password);
-
-            if (authenticated)
+            try
             {
-                var token = _authService.GenerateJwtToken(request.UserName, customId.ToString());
-                return Ok(new { token });
+                (var authenticated, var customId) = await _loginService.Login(request.UserName, request.Password);
+
+                if (authenticated)
+                {
+                    var token = _authService.GenerateJwtToken(request.UserName, customId.ToString());
+                    return Ok(new { token });
+                }
+                return Unauthorized(new { message = "Usuário ou senha inválidos" });
             }
-            return Unauthorized("Usuário ou senha inválidos");
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor" });
+            }
+                
         }
     }
 }

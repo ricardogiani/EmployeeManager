@@ -2,6 +2,8 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { LoginService } from '../../services/login.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { LocalDataService } from '../../services/local-data.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -18,14 +20,15 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   loginError: string = '';
   
-  userName = signal('');
-  password = signal('');
+/*  userName = signal('');
+  password = signal('');*/
 
   private loginService = inject(LoginService);
+  //private localDataService = inject(LocalDataService);
 
-  loading = false;
+  loading: boolean = false;
   
-  constructor(private fb: FormBuilder) { 
+  constructor(private router: Router, private fb: FormBuilder) { 
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(16)]]
@@ -35,31 +38,29 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
 
-  isValidEmail() : boolean
+  /*isValidEmail() : boolean
   {
     return this.userName().includes('@') && this.userName().includes('.');;
-  }
+  }*/
 
  onSubmit(): void {
     if (this.loginForm.valid) {
         const { username, password } = this.loginForm.value;
 
 
-        /*this.authenticationService.login(username, password).subscribe(
-          (response: any) => { 
-            console.log("login sucesso");
-            this.app.onLoginSucess(username, response.token);
-            this.router.navigate(['/demo']);
-            
+        this.loginService.login(username, password).subscribe({
+          next: (data) => {
+            this.loading = false;
+
+            this.router.navigate(['/employee-list']);
           },
-          error => { 
-            //this.loginError = "falha ao realizar login";
-            this.localDataService.clearData();
-            alert(error?.error);
-            console.log(error);
-          },
-          () => console.log('encerrou carga do arquivo'),
-        );*/
+          error: (err) => {
+            console.error('Erro ao carregar funcionários:', err);
+            this.loginError = 'Falha ao carregar funcionários. Tente novamente.';
+            this.loading = false;
+          }
+        });
+       
     } else {
       alert('Por favor, preencha os campos corretamente.');
     }

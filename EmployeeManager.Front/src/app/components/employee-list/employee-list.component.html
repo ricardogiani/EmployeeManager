@@ -1,3 +1,13 @@
-<p>
+<h2>
   employee-list works!
-</p>
+</h2>
+
+<div>
+  <input type="text" placeholder="search employees" [(ngModel)]="inputSearch" />
+
+  <button class="primary" type="button" (click)="employeesFind('document')">Search by Document</button>
+  <button class="primary" type="button" (click)="employeesFind('email')">Search by Email</button>
+  <button class="primary" type="button" (click)="employeesFind('all')">Search All</button>
+  
+</div>
+

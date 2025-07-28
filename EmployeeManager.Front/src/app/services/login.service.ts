@@ -1,8 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { Observable, tap } from 'rxjs';
+import { LocalDataService } from './local-data.service';
 
 export class LoginResponse {
+  message?: string;
+  token?: string;
+  sucess?: boolean;
 }
 
 
@@ -12,7 +16,10 @@ export class LoginResponse {
 export class LoginService {
 
   // URL base da sua API. Substitua pelo endereço real do seu backend.
-  private apiUrl = 'https://sua-api.com/api/employees';
+  private apiUrl = 'http://localhost:5148/api/Login';
+
+
+  private localDataService = inject(LocalDataService);
   
   constructor(private http: HttpClient) { }
 
@@ -21,9 +28,25 @@ export class LoginService {
    * @param employee O objeto EmployeeDto a ser criado.
    * @returns Um Observable do EmployeeDto criado.
    */
-  Login(username: string, password: string ): Observable<LoginResponse> {
+  login(username: string, password: string ): Observable<LoginResponse> {
 
-    return this.http.post<LoginResponse>(this.apiUrl, { username, password });
+    return this.http.post<LoginResponse>(this.apiUrl, { username, password })
+      .pipe(
+        // Opcional: usar 'tap' para fazer algo com a resposta antes de passá-la adiante
+        tap(response => {
+
+            this.localDataService.saveData("username", username);
+            this.localDataService.saveData("logged", "true");
+            this.localDataService.saveData("token", response.token as string);   
+
+            response.token = "";
+            response.sucess = true;
+
+           console.log('Login bem-sucedido, resposta da API:', username);          
+        }),
+        // Usa catchError para interceptar e tratar erros da requisição
+        //catchError(this.handleError)
+      );
   }
 
 }
