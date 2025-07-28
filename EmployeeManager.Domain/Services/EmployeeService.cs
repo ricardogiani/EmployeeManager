@@ -78,7 +78,9 @@ namespace EmployeeManager.Domain.Services
 
             employee.UpdatedAt = DateTime.Now;
             employee.CreatedAt = employeeToUpdate.CreatedAt;
-            
+            employee.PasswordHash = employeeToUpdate.PasswordHash;
+            employee.PasswordSalt = employeeToUpdate.PasswordSalt;
+
             var result = await _employeeRepository.Save(employee);
 
             return result;

@@ -20,7 +20,7 @@ namespace EmployeeManager.Application.Dtos
 
         public string DocumentNumber { get; set; }
 
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         public DateTime BirthDate { get; set; }
 

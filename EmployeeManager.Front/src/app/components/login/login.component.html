@@ -6,7 +6,7 @@
       <label for="username">Usuário</label>
       <input id="username" type="text" formControlName="username" placeholder="Digite seu usuário" />
       <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="error">
-        O campo usuário é obrigatório.
+        Deve ser informado o e-mail para nome de usuário.
       </div>
     </div>
 
