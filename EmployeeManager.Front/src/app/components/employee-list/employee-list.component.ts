@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { Employee } from '../../interfaces/employee';
 import { EmployeeTableComponent } from '../employee-table/employee-table.component';
 import { Router, RouterLink } from '@angular/router';
+import { EmployeeFilter } from '../../interfaces/employee-filter';
+import { JobLevelEnum } from '../../enums/job-level-enum';
 
 @Component({
   selector: 'app-employee-list',
@@ -28,7 +30,7 @@ export class EmployeeListComponent implements OnInit {
 
   private employeeService = inject(EmployeeService);
 
-  constructor(private router: Router,) { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
 
@@ -39,8 +41,14 @@ export class EmployeeListComponent implements OnInit {
     //alert(typeFilter);    
     console.log(`search employees type: ${typeFilter}, value: ${this.inputSearch}`);
 
+    let filter = { } as EmployeeFilter ;
     if (typeFilter == 'email')
-      this.employeeService.get({ email: this.inputSearch }).subscribe({
+      filter.email = this.inputSearch;
+
+    if (typeFilter == 'jobLevel')
+      filter.jobLevel = (JobLevelEnum as any)[this.inputSearch];
+
+    this.employeeService.getByFilter().subscribe({
       // 1. Bloco `next`: Executado quando a requisição é bem-sucedida e os dados chegam.
       next: (data: Employee[]) => {
         //this.foundEmployees = data; // Atribui os dados recebidos à sua propriedade
@@ -57,7 +65,7 @@ export class EmployeeListComponent implements OnInit {
       // 3. Bloco `complete`: Executado quando o Observable é concluído (seja com sucesso ou erro).
       // Geralmente usado para finalizar estados de carregamento ou recursos.
       complete: () => {
-        console.log('Busca por email concluída.');
+        console.log(`Busca por ${typeFilter} concluída.`);
         // Opcional: pode definir this.loading = false aqui se não for definido em next/error
       }
     });

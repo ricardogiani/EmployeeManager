@@ -37,7 +37,6 @@ export class EmployeeService {
 
   /**
    * Atualiza um funcionário existente.
-   * Corresponde a: public Task<EmployeeEntity> Update(int id, EmployeeEntity employeeEntity);
    *
    * @param id O ID do funcionário a ser atualizado.
    * @param employeeEntity O objeto EmployeeEntity com os dados atualizados.
@@ -50,12 +49,11 @@ export class EmployeeService {
 
   /**
    * Obtém uma coleção de funcionários com base em critérios de filtro.
-   * Corresponde a: public Task<IEnumerable<EmployeeEntity>> Get(EmployeeFilterRequest filter);
-   *
+   * 
    * @param filter (Opcional) O objeto de requisição de filtro.
    * @returns Um Observable de um array de EmployeeEntity.
    */
-  get(filter?: EmployeeFilter): Observable<Employee[]> {
+  getByFilter(filter?: EmployeeFilter): Observable<Employee[]> {
     let params = new HttpParams();
     if (filter) {
       // Converte o objeto de filtro em parâmetros de URL
@@ -79,7 +77,6 @@ export class EmployeeService {
 
   /**
    * Obtém um funcionário pelo ID.
-   * Corresponde a: public Task<EmployeeEntity> GetById(int id);
    *
    * @param id O ID do funcionário.
    * @returns Um Observable de EmployeeEntity.
@@ -91,7 +88,6 @@ export class EmployeeService {
 
   /**
    * Exclui um funcionário pelo ID.
-   * Corresponde a: public Task<bool> Delete(int id);
    *
    * @param id O ID do funcionário a ser excluído.
    * @returns Um Observable de boolean (assumindo que sua API retorna true/false ou um status 204 No Content).

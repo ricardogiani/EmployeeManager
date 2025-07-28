@@ -1,9 +1,10 @@
 import { Component, EventEmitter, inject, Input, input, OnInit, Output } from '@angular/core';
 import { Employee } from '../../interfaces/employee';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { JobLevelEnum } from '../../enums/job-level-enum';
+import { EmployeeService } from '../../services/employee/employee.service';
 
 @Component({
   selector: 'app-employee-detail',
@@ -17,33 +18,36 @@ import { JobLevelEnum } from '../../enums/job-level-enum';
 })
 export class EmployeeDetailComponent implements OnInit {
 
+  loading: boolean = false;
+  error: string = '';
   route: ActivatedRoute = inject(ActivatedRoute);
 
-  @Input() employee: Employee | null = null;
-  @Output() formSubmit = new EventEmitter<Employee>();
-  @Output() cancelForm = new EventEmitter<void>();
+  employeeService: EmployeeService = inject(EmployeeService);
 
-  employeeId: number = 0;
+  //@Input() employee: Employee | null = null;
+  //@Output() formSubmit = new EventEmitter<Employee>();
+  //@Output() cancelForm = new EventEmitter<void>();
+
+  editEmployeeId: number = 0;
   employeeForm!: FormGroup;
   isEditMode: boolean = false;
 
   JobLevelEnum = JobLevelEnum;
   jobLevels = Object.values(JobLevelEnum).filter(value => typeof value === 'number' && value !== JobLevelEnum.None);
 
-  constructor(private fb: FormBuilder) { 
-    this.employeeId = Number(this.route.snapshot.params['id']);
+  constructor(private fb: FormBuilder, private router: Router) { 
+    this.editEmployeeId = Number(this.route.snapshot.params['id']);
   }
 
   //employee = input.required<Employee>();
 
   ngOnInit() {
     this.initForm();
+    this.isEditMode = (this.editEmployeeId > 0);
 
-    if (this.employee) {
-      this.isEditMode = true;
-      this.populateForm(this.employee);
+    if (this.isEditMode) {
+      this.getEmployeById(this.editEmployeeId);
     } else {
-      this.isEditMode = false;
       this.employeeForm.get('password')?.setValidators(Validators.required);
       this.employeeForm.get('password')?.updateValueAndValidity();
     }
@@ -65,6 +69,37 @@ export class EmployeeDetailComponent implements OnInit {
     });
   }
 
+   // Se você precisa que a função retorne o funcionário para quem a chamou, ela PRECISA retornar uma Promise
+  /*async getEmployeeByIdAsync(id: number): Promise<Employee | null> {
+    try {
+      const employee = await firstValueFrom(this.employeeService.getById(id));
+      return employee;
+    } catch (error) {
+      console.error(`Erro ao buscar funcionário ${id}:`, error);
+      return null;
+    }
+  }*/
+
+
+  getEmployeById(employeeId: number) : void {
+
+    this.employeeService.getById(employeeId).subscribe({
+      
+      next: (value: Employee) => {
+        this.populateForm(value);        
+      },
+      error: (err: any) => { 
+        //this.error = `Falha na busca: ${err.message || 'Erro desconhecido'}`;
+        //this.loading = false;
+        console.error(`Erro ao buscar ${employeeId}:`, err);
+      },      
+      complete: () => {
+        console.log(`Busca por ${employeeId} concluída.`);        
+      }
+    });
+    
+  }
+
   populateForm(employee: Employee): void {
     this.employeeForm.get('password')?.clearValidators();
     this.employeeForm.get('password')?.updateValueAndValidity();
@@ -83,23 +118,54 @@ export class EmployeeDetailComponent implements OnInit {
     });
   }
 
+  update(employeeId: number, employee: Employee) : void {
+    this.employeeService.update(employeeId, employee).subscribe({
+        next: (updatedEmployee) => {
+          console.log('Funcionário atualizado com sucesso!', updatedEmployee);
+          this.loading = false;
+          this.router.navigate(['/employee-list']);
+        },
+        error: (err) => {
+          this.error = `Erro ao atualizar funcionário: ${err.message}`;
+          this.loading = false;
+          console.error(err);
+        }
+      });
+  }
+
+  create(employee: Employee) : void {
+    this.employeeService.create(employee).subscribe({
+        next: (createdEmployee) => {
+          console.log('Funcionário cadastrado com sucesso!', createdEmployee);
+          this.loading = false;
+          this.router.navigate(['/employee-list']);
+        },
+        error: (err) => {
+          this.error = `Erro ao cadastrar funcionário: ${err.message}`;
+          this.loading = false;
+          console.error(err);
+        }
+      });
+  }
+
   onSubmit(): void {
     if (this.employeeForm.invalid) {
       this.employeeForm.markAllAsTouched();
       return;
     }
-
     const formData = this.employeeForm.getRawValue();
 
-    if (this.isEditMode && !formData.password) {
+    if (this.isEditMode) {
       delete formData.password;
-    }
 
-    this.formSubmit.emit(formData as Employee);
+      this.update(this.editEmployeeId, formData as Employee);
+    }
+    else
+      this.create(formData as Employee);
   }
 
   onCancel(): void {
-    this.cancelForm.emit();
+    // this.cancelForm.emit();
   }
 
 }
