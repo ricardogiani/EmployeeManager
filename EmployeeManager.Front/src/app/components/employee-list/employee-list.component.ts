@@ -7,15 +7,20 @@ import { EmployeeTableComponent } from '../employee-table/employee-table.compone
 import { Router, RouterLink } from '@angular/router';
 import { EmployeeFilter } from '../../interfaces/employee-filter';
 import { JobLevelEnum } from '../../enums/job-level-enum';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-employee-list',
   standalone: true,
   imports:[
-    CommonModule,
-    RouterLink,
+    CommonModule,       
     FormsModule,
-    EmployeeTableComponent
+    EmployeeTableComponent,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   templateUrl: './employee-list.component.html',
   styleUrls: ['./employee-list.component.css']
@@ -24,7 +29,7 @@ export class EmployeeListComponent implements OnInit {
 
   inputSearch: string = 'ricardogiani@gmail.com';  
 
-  employeeId = signal('1');
+  //employeeId = signal('1');
 
   employees: Employee[] = [];
 
@@ -43,12 +48,9 @@ export class EmployeeListComponent implements OnInit {
 
     let filter = { } as EmployeeFilter ;
     if (typeFilter == 'email')
-      filter.email = this.inputSearch;
+      filter.email = this.inputSearch;    
 
-    if (typeFilter == 'jobLevel')
-      filter.jobLevel = (JobLevelEnum as any)[this.inputSearch];
-
-    this.employeeService.getByFilter().subscribe({
+    this.employeeService.getByFilter(filter).subscribe({
       // 1. Bloco `next`: Executado quando a requisição é bem-sucedida e os dados chegam.
       next: (data: Employee[]) => {
         //this.foundEmployees = data; // Atribui os dados recebidos à sua propriedade
@@ -75,6 +77,12 @@ export class EmployeeListComponent implements OnInit {
 
   newEmployee(){
     this.router.navigate(['/employee']);
+  }
+
+  onEmployeeEdit(event : Employee){
+    const _param = `/employee/${event.id}`;
+    console.log(`[onEmployeeEdit] call ${_param}`)
+    this.router.navigate([_param]);
   }
 
 }

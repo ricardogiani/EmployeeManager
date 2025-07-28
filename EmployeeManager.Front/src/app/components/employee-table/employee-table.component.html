@@ -14,6 +14,7 @@
         <th style="padding: 8px; text-align: left;">Gerente ID</th>
         <th style="padding: 8px; text-align: left;">Criado Em</th>
         <th style="padding: 8px; text-align: left;">Atualizado Em</th>
+        <th style="padding: 8px; text-align: left;">Ações</th>
       </tr>
     </thead>
     <tbody>
@@ -32,6 +33,9 @@
         <td style="padding: 8px;">{{ employee.managerId || 'N/A' }}</td>
         <td style="padding: 8px;">{{ employee.createdAt | date:'dd/MM/yyyy hh:mm:ss' }}</td>
         <td style="padding: 8px;">{{ employee.updatedAt | date:'dd/MM/yyyy hh:mm:ss' }}</td>
+        <td style="padding: 8px;">
+          <button (click)="editEmployee(employee)">Editar</button>
+        </td>
       </tr>
     </tbody>
   </table>

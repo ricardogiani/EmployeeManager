@@ -53,8 +53,8 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['/employee-list']);
           },
           error: (err) => {
-            console.error('Erro ao carregar funcionários:', err);
-            this.loginError = 'Falha ao carregar funcionários. Tente novamente.';
+            console.error('Falha ao efetuar o Login:', err);
+            this.loginError = 'Falha ao efetuar Login. Tente novamente.';
             this.loading = false;
           }
         });

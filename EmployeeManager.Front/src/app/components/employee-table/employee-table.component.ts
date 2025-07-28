@@ -1,18 +1,20 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { Employee } from '../../interfaces/employee';
 import { JobLevelEnum } from '../../enums/job-level-enum';
+import { MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'app-employee-table',
   standalone: true,
-  imports: [CommonModule], 
+  imports: [CommonModule, MatTableModule], 
   templateUrl: './employee-table.component.html',
   styleUrls: ['./employee-table.component.css'] 
 })
 export class EmployeeTableComponent implements OnInit {
 
   @Input() employees: Employee[] = [];
+  @Output() editEmployeeEvent = new EventEmitter<Employee>();
 
   JobLevelEnum = JobLevelEnum;
 
@@ -28,5 +30,11 @@ export class EmployeeTableComponent implements OnInit {
     const d = typeof date === 'string' ? new Date(date) : date;
     // Formato básico DD/MM/AAAA
     return d.toLocaleDateString('pt-BR');
+  }
+
+  editEmployee(employee: Employee) : void
+  {
+    console.log(`editEmployee: ${employee}`);
+    this.editEmployeeEvent.emit(employee);
   }
 }

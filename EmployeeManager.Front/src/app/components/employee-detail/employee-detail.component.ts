@@ -165,7 +165,7 @@ export class EmployeeDetailComponent implements OnInit {
   }
 
   onCancel(): void {
-    // this.cancelForm.emit();
+    this.router.navigate(['/employee-list']);
   }
 
 }

@@ -3,20 +3,22 @@
 </h2>
 
 <div>
-  <input type="text" placeholder="search employees" [(ngModel)]="inputSearch" />
+  <mat-form-field class="input-field">
+    <mat-label>Digite o e-mail</mat-label>
+    <input matInput  [(ngModel)]="inputSearch" />
+  </mat-form-field>
+  
+  <button matButton="outlined" (click)="employeesFind('email')">Buscar</button>
+  <button matButton="outlined" (click)="employeesFind('all')">Buscar todos</button>
+  <button matButton="outlined" (click)="newEmployee()">Novo Funcionário</button>
 
-  <button class="primary" type="button" (click)="employeesFind('document')">Search by Document</button>
-  <button class="primary" type="button" (click)="employeesFind('email')">Search by Email</button>
-  <button class="primary" type="button" (click)="employeesFind('all')">Search All</button>
-  <button class="primary" type="button" (click)="newEmployee()">New Employee</button>
+  
 
-  <a [routerLink]="['/employee', employeeId()]">Edit Employe</a>
   
 </div>
 
 <div>
-  <app-employee-table [employees]="employees"></app-employee-table>
-  {{employees |json}}
+  <app-employee-table [employees]="employees" (editEmployeeEvent)="onEmployeeEdit($event)"></app-employee-table>
 </div>
 
 

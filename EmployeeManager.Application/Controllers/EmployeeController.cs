@@ -39,11 +39,11 @@ namespace EmployeeManager.Application.Controllers
         [Authorize]
         [HttpGet] // Atributo para indicar que este é um endpoint HTTP GET
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<EmployeeDto>))]
-        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetByFilter([FromQuery] EmployeeFilterRequest employeeDto)
         {           
-            _logger.LogInformation("Get All Employee");
+            _logger.LogInformation("Get By Filter");
 
-            var employees = await _employeeService.Get(new EmployeeFilterRequest());
+            var employees = await _employeeService.Get(employeeDto);
 
             var employeesDto = _mapper.Map<IEnumerable<EmployeeDto>>(employees);
             //var employees = new List<EmployeeDto>() { new EmployeeDto() };
