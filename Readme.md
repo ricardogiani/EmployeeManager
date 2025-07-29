@@ -1,3 +1,10 @@
+## Requisitos:
+* Node > 20
+* Angular 20
+* Net 8
+* Imagem postgres
+* Docker instalado
+
 ## gerar a imagem back-end
 * na raiz do projeto: docker build -t employee-manager:latest .
 
@@ -8,17 +15,11 @@
 1.employee.sql
 2.begin-data.sql
 
-## Subir back-end local
-* pasta "EmployeeManager.Application>" dotnet run
-
 ## Subir front-end
 * pasta "EmployeeManager.Front>" npm start
 
-## Login: admin@company.com, password: Senha123*
+## Login
+* admin@company.com, password: Senha123*
 
-
-
-
-## opcional: subindo um container
-docker run -p <porta_do_host>:<porta_do_container> --name <nome_do_container> <ID_da_imagem>
-docker run -p 5148:5148 --name employee-container employee-manager
+## Subir back-end local (opcional)
+* pasta "EmployeeManager.Application>" dotnet run
