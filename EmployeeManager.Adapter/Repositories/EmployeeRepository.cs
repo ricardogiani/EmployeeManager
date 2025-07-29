@@ -64,8 +64,6 @@ namespace EmployeeManager.Adapter.Repositories
 
             var resultQuery = resulAll.Where(x => MatchFilter(x, filter)).ToList();
 
-            //var result = _mapper.Map<EmployeeEntity>(new EmployeeDataModel() { BirthDate = DateTime.Now.AddYears(-20), FirstName = "asdasd", DocumentNumber = "asdadasdas", LastName = "asdadadasd", Email = "ricardogiani@gmail.com", JobLevel = Domain.Enums.JobLevelEnum.Coordinator });
-
             return _mapper.Map<IEnumerable<EmployeeEntity>>(resultQuery);
         }
 

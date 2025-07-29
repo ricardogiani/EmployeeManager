@@ -26,9 +26,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 })
 export class EmployeeListComponent implements OnInit {
 
-  inputSearch: string = 'ricardogiani@gmail.com';  
-
-  //employeeId = signal('1');
+  inputSearch: string = '';  
 
   employees = signal<Employee[]>([]);
 
