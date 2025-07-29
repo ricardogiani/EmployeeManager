@@ -12,7 +12,8 @@ namespace EmployeeManager.Application.Mappers
     {
         public EmployeeMappingProfile()
         {
-            CreateMap<EmployeeEntity, EmployeeDto>();
+            CreateMap<EmployeeEntity, EmployeeDto>()
+                .ForMember(dest => dest.ManagerName, opt => opt.MapFrom(src => src.Manager.FirstName));
 
             CreateMap<EmployeeDto, EmployeeEntity>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore()) 

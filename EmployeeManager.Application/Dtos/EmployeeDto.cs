@@ -30,6 +30,8 @@ namespace EmployeeManager.Application.Dtos
 
         public int? ManagerId { get; set; }
 
+        public string? ManagerName { get; set; }
+
         public DateTime? CreatedAt { get; set; }
         
         public DateTime? UpdatedAt { get; set; }

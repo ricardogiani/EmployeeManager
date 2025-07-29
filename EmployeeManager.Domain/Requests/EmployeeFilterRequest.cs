@@ -14,6 +14,8 @@ namespace EmployeeManager.Domain.Requests
 
         public JobLevelEnum? JobLevel { get; set; }
 
+        public Boolean JobLevelUp { get; set; } = false;       
+
         public bool? Active { get; set; }
     }
 }

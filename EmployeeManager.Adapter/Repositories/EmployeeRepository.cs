@@ -41,16 +41,21 @@ namespace EmployeeManager.Adapter.Repositories
             if (model == null)
                 return null;
 
-            return _mapper.Map<EmployeeEntity>(model);
-        }
+            var entity = _mapper.Map<EmployeeEntity>(model);
+            await LoadManager(entity);
 
+            return entity;
+        }
 
         public async Task<EmployeeEntity> LoadByDocumentNumber(string documentNumber)
         {
             var resultList = await _dapperDataSource.GetByField("document_number", documentNumber);
             var model = resultList.FirstOrDefault();
 
-            return _mapper.Map<EmployeeEntity>(model);
+            var entity = _mapper.Map<EmployeeEntity>(model);
+            await LoadManager(entity);
+
+            return entity;
         }
 
         public async Task<IEnumerable<EmployeeEntity>> Query(EmployeeFilterRequest filter)
@@ -71,9 +76,9 @@ namespace EmployeeManager.Adapter.Repositories
             &&
             (string.IsNullOrEmpty(filter.Email) || model.email == filter.Email)
             &&
-            (!filter.JobLevel.HasValue || model.job_level == filter.JobLevel)
+            (!filter.JobLevel.HasValue || ((filter.JobLevelUp == true && model.job_level > filter.JobLevel) || model.job_level == filter.JobLevel))
             &&
-            (string.IsNullOrEmpty(filter.PhoneNumber) || model.phone_number == filter.PhoneNumber);            
+            (string.IsNullOrEmpty(filter.PhoneNumber) || model.phone_number == filter.PhoneNumber);
         }
 
         public async Task<EmployeeEntity> Save(EmployeeEntity employeeEntity)
@@ -85,6 +90,16 @@ namespace EmployeeManager.Adapter.Repositories
             var modelSaved = await _dapperDataSource.Save(model);
 
             return _mapper.Map<EmployeeEntity>(modelSaved);
+        }
+        
+        private async Task LoadManager(EmployeeEntity entity)
+        {
+            if (entity.ManagerId > 0)
+            {
+                var manager = await Load(entity.ManagerId.Value);
+
+                entity.AssignManager(manager);
+            }
         }
         
     }

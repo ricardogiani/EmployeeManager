@@ -36,9 +36,11 @@ export class EmployeeDetailComponent implements OnInit {
   error: string = '';
   route: ActivatedRoute = inject(ActivatedRoute);
 
+  @Input() allEmployees: Employee[] = [];
+
   employeeService: EmployeeService = inject(EmployeeService);
 
-  //@Input() employee: Employee | null = null;
+  // @Input() employee: Employee | null = null;
   //@Output() formSubmit = new EventEmitter<Employee>();
   //@Output() cancelForm = new EventEmitter<void>();
 
@@ -48,6 +50,8 @@ export class EmployeeDetailComponent implements OnInit {
 
   JobLevelEnum = JobLevelEnum;
   jobLevels = Object.values(JobLevelEnum).filter(value => typeof value === 'number' && value !== JobLevelEnum.None);
+
+  //noManagerOption = { id: undefined, firstName: 'Nenhum', lastName: 'Gerente', active: true, birthDate: new Date(), documentNumber: "asdas", email: "email@teste.com", jobLevel: JobLevelEnum.None, phoneNumber: "65465465" } as Employee;
 
   constructor(private fb: FormBuilder, private router: Router) { 
     this.editEmployeeId = Number(this.route.snapshot.params['id']);
@@ -59,8 +63,10 @@ export class EmployeeDetailComponent implements OnInit {
     this.initForm();
     this.isEditMode = (this.editEmployeeId > 0);
 
+    this.getEmployees(JobLevelEnum.Intern);
+
     if (this.isEditMode) {
-      this.getEmployeById(this.editEmployeeId);
+      this.getEmployeById(this.editEmployeeId);      
     } else {
       this.employeeForm.get('password')?.setValidators(Validators.required);
       this.employeeForm.get('password')?.updateValueAndValidity();
@@ -83,35 +89,42 @@ export class EmployeeDetailComponent implements OnInit {
     });
   }
 
-   // Se você precisa que a função retorne o funcionário para quem a chamou, ela PRECISA retornar uma Promise
-  /*async getEmployeeByIdAsync(id: number): Promise<Employee | null> {
-    try {
-      const employee = await firstValueFrom(this.employeeService.getById(id));
-      return employee;
-    } catch (error) {
-      console.error(`Erro ao buscar funcionário ${id}:`, error);
-      return null;
-    }
-  }*/
-
 
   getEmployeById(employeeId: number) : void {
 
     this.employeeService.getById(employeeId).subscribe({
       
-      next: (value: Employee) => {
+      next: (value: Employee) => {        
         this.populateForm(value);        
       },
       error: (err: any) => { 
-        //this.error = `Falha na busca: ${err.message || 'Erro desconhecido'}`;
-        //this.loading = false;
         console.error(`Erro ao buscar ${employeeId}:`, err);
       },      
       complete: () => {
         console.log(`Busca por ${employeeId} concluída.`);        
       }
+    });        
+  }
+
+  getEmployees(jobLevel: JobLevelEnum) : void {
+    this.employeeService.getByFilter({ jobLevel: jobLevel, JobLevelUp: true }).subscribe({      
+      next: (value: Employee[]) => {
+
+        this.allEmployees = value;
+
+        /*if (this.allEmployees) {
+          this.allEmployees = [this.noManagerOption, ...this.allEmployees];
+        }*/
+
+        console.error(`Funcionários carregados`);
+      },
+      error: (err: any) => { 
+        console.error(`Erro ao buscar Managers ${jobLevel}:`, err);
+      },      
+      complete: () => {
+        console.log(`Busca por Managers acima de ${jobLevel} concluída.`);        
+      }
     });
-    
   }
 
   populateForm(employee: Employee): void {

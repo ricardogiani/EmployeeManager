@@ -90,7 +90,13 @@
 
       <mat-form-field appearance="outline">
         <mat-label>ID do Gerente (opcional):</mat-label>
-        <input matInput type="number" formControlName="managerId">
+        <mat-select formControlName="managerId" placeholder="Selecione um gerente">
+          <mat-option [value]="null">Nenhum Gerente</mat-option>
+
+          <mat-option *ngFor="let employee of allEmployees" [value]="employee.id">
+            {{ employee.firstName }} {{ employee.lastName }} (ID: {{ employee.id }})
+          </mat-option>
+        </mat-select>
       </mat-form-field>
     </div>
 
