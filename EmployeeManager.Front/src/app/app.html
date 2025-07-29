@@ -1,11 +1,9 @@
 
 <main class="main">
-  <div class="content">
-    <!-- <div class="left-side"> -->
-    <!--<app-login></app-login>      
-    <app-employee-list></app-employee-list>
-    <app-employee-detail></app-employee-detail>    -->
-    <router-outlet />
+  <div class="main-content">
+    <app-header *ngIf="logged == true" (logoutEvent)="logoutEvent($event)" />
+    <app-login *ngIf="logged == false" (loginEvent)="loginEvent($event)" />
+    <router-outlet *ngIf="logged==true"/>
   </div>
 </main>
 

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { empty, Observable, tap } from 'rxjs';
 import { StorageService } from '../storage/storage.service';
 
 export class LoginResponse {
@@ -13,7 +13,7 @@ export class LoginResponse {
 @Injectable({
   providedIn: 'root'
 })
-export class LoginService {
+export class AuthService {
 
   // URL base da sua API. Substitua pelo endereço real do seu backend.
   private apiUrl = 'http://localhost:5148/api/Login';
@@ -23,6 +23,30 @@ export class LoginService {
   
   constructor(private http: HttpClient) { }
 
+  isAuthenticated(): boolean
+  {
+    const authenticated = this.storageService.getData("authenticated");
+
+    if (authenticated)
+      return  Boolean(authenticated);
+
+    return false;
+  }
+
+  getUserName() : string
+  {
+    const userName = this.storageService.getData("username");
+    if (userName)
+      return userName as string;
+
+    return "";
+  }
+
+  logout() : void
+  {
+    this.storageService.clearData();
+  }
+  
    /**
    * Cria um novo funcionário.
    * @param employee O objeto EmployeeDto a ser criado.
@@ -36,7 +60,7 @@ export class LoginService {
         tap(response => {
 
             this.storageService.saveData("username", username);
-            this.storageService.saveData("logged", "true");
+            this.storageService.saveData("authenticated", "true");
             this.storageService.saveData("token", response.token as string);   
 
             response.token = "";

@@ -1,8 +1,13 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { LoginService } from '../../services/login/login.service';
+import { Component, EventEmitter, inject, OnInit, Output, signal } from '@angular/core';
+import { AuthService } from '../../services/login/auth.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-login',
@@ -10,7 +15,12 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,    
+    MatFormFieldModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatInputModule
   ],
   styleUrls: ['./login.component.css']
 })
@@ -18,11 +28,13 @@ export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
   loginError: string = '';
+
+  @Output() loginEvent = new EventEmitter<{userName: string, logged: boolean }>();
   
 /*  userName = signal('');
   password = signal('');*/
 
-  private loginService = inject(LoginService);
+  private loginService = inject(AuthService);
 
   loading: boolean = false;
   
@@ -49,7 +61,7 @@ export class LoginComponent implements OnInit {
         this.loginService.login(username, password).subscribe({
           next: (data) => {
             this.loading = false;
-
+            this.loginEvent.emit({ userName: username, logged: true});
             this.router.navigate(['/employee-list']);
           },
           error: (err) => {

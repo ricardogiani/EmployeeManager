@@ -1,0 +1,20 @@
+<mat-toolbar color="primary" class="app-toolbar">
+  <a mat-button>
+    <mat-icon>person</mat-icon> {{ userName }}
+  </a>
+
+  <span class="toolbar-spacer"></span>
+
+  <a mat-button routerLink="/employee-list" routerLinkActive="active-link">
+    <mat-icon>group</mat-icon>Funcionários
+  </a>
+  <!--<a mat-button routerLink="/produtos" routerLinkActive="active-link">
+    <mat-icon>store</mat-icon> Produtos
+  </a> -->
+  <a mat-button routerLink="/configuracoes" routerLinkActive="active-link">
+    <mat-icon>lock</mat-icon>Alterar Senha
+  </a>
+  <button mat-button (click)="logout()">
+    <mat-icon>logout</mat-icon> Sair
+  </button>
+</mat-toolbar>

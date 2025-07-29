@@ -1,24 +1,23 @@
-<h2>
-  employee-list works!
-</h2>
+<div class="form-container">
+  <h2>Lista de Funcionários</h2>
 
-<div>
-  <mat-form-field class="input-field">
-    <mat-label>Digite o e-mail</mat-label>
-    <input matInput  [(ngModel)]="inputSearch" />
-  </mat-form-field>
-  
-  <button matButton="outlined" (click)="employeesFind('email')">Buscar</button>
-  <button matButton="outlined" (click)="employeesFind('all')">Buscar todos</button>
-  <button matButton="outlined" (click)="newEmployee()">Novo Funcionário</button>
+  <div class="search-actions">
+    <mat-form-field appearance="outline" class="input-field">
+      <mat-label>Digite o e-mail</mat-label>
+      <input matInput [(ngModel)]="inputSearch" />
+    </mat-form-field>
 
-  
+    <div class="button-group">
+      <button mat-raised-button color="primary" (click)="employeesFind('email')">Buscar</button>
+      <button mat-raised-button color="accent" (click)="employeesFind('all')">Buscar todos</button>
+      <button mat-raised-button color="warn" (click)="newEmployee()">Novo Funcionário</button>
+    </div>
+  </div>
 
-  
+  <div class="table-container">
+    <app-employee-table
+      [employees]="employees"
+      (editEmployeeEvent)="onEmployeeEdit($event)"
+    ></app-employee-table>
+  </div>
 </div>
-
-<div>
-  <app-employee-table [employees]="employees" (editEmployeeEvent)="onEmployeeEdit($event)"></app-employee-table>
-</div>
-
-

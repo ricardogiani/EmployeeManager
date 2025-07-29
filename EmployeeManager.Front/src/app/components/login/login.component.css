@@ -1,0 +1,69 @@
+/* Contêiner principal para centralizar o card de login */
+.login-container {
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+  min-height: 100vh; /* Ocupa a altura total da viewport */
+  background-color: #f0f2f5; /* Cor de fundo suave para a página */
+  padding: 20px; /* Espaçamento interno para telas menores */
+  box-sizing: border-box; /* Inclui padding na largura/altura total */
+}
+
+/* Estilo para o card de login */
+.login-card {
+  width: 100%;
+  max-width: 400px; /* Largura máxima do card de login */
+  padding: 20px 30px; /* Padding interno do card */
+  border-radius: 8px; /* Cantos arredondados */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra mais pronunciada */
+}
+
+/* Centraliza o título dentro do card */
+mat-card-title {
+  text-align: center;
+  margin-bottom: 25px;
+  h2 {
+    color: #3f51b5; /* Cor primária do Angular Material */
+    font-size: 2em; /* Tamanho do título */
+    font-weight: 500;
+  }
+}
+
+/* Estilo para os campos de formulário */
+.full-width-field {
+  width: 100%;
+  margin-bottom: 15px; /* Espaço entre os campos */
+}
+
+/* Estilo para o botão de login */
+.full-width-button {
+  width: 100%;
+  padding: 10px 0; /* Aumenta o padding vertical do botão */
+  font-size: 1.1em;
+  margin-top: 20px; /* Espaço acima do botão */
+  display: flex; /* Para centralizar o spinner/texto */
+  justify-content: center;
+  align-items: center;
+}
+
+.full-width-button mat-spinner {
+  margin-right: 8px; /* Espaço entre o spinner e o texto */
+}
+
+/* Estilo para a mensagem de erro de login (se houver) */
+.login-error {
+  color: #f44336; /* Cor de erro do Angular Material (vermelho) */
+  text-align: center;
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+/* Media query para telas menores */
+@media (max-width: 500px) {
+  .login-card {
+    padding: 15px 20px; /* Reduz o padding em telas menores */
+  }
+  mat-card-title h2 {
+    font-size: 1.8em; /* Ajusta o tamanho do título */
+  }
+}

@@ -1,101 +1,106 @@
-<h1>
+<div class="form-container">
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+    <h3>{{ isEditMode ? 'Editar Funcionário' : 'Novo Funcionário' }}</h3>
 
-  Cadastro de Funcionários
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>ID:</mat-label>
+        <input matInput type="text" formControlName="id" readonly>
+      </mat-form-field>
 
-</h1>
-
-<form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
-  <h3>{{ isEditMode ? 'Editar Funcionário' : 'Novo Funcionário' }}</h3>
-
-  <div>
-    <label for="id">ID:</label>
-    <input type="text" id="id" formControlName="id" readonly>
-  </div>
-
-  <div>
-    <label for="firstName">Primeiro Nome:</label>
-    <input type="text" id="firstName" formControlName="firstName">
-    <div *ngIf="employeeForm.get('firstName')?.invalid && employeeForm.get('firstName')?.touched">
-      O primeiro nome é obrigatório.
+      <mat-form-field appearance="outline">
+        <mat-label>Primeiro Nome:</mat-label>
+        <input matInput type="text" formControlName="firstName">
+        <mat-error *ngIf="employeeForm.get('firstName')?.invalid && employeeForm.get('firstName')?.touched">
+          O primeiro nome é obrigatório.
+        </mat-error>
+      </mat-form-field>
     </div>
-  </div>
 
-  <div>
-    <label for="lastName">Sobrenome:</label>
-    <input type="text" id="lastName" formControlName="lastName">
-    <div *ngIf="employeeForm.get('lastName')?.invalid && employeeForm.get('lastName')?.touched">
-      O sobrenome é obrigatório.
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Sobrenome:</mat-label>
+        <input matInput type="text" formControlName="lastName">
+        <mat-error *ngIf="employeeForm.get('lastName')?.invalid && employeeForm.get('lastName')?.touched">
+          O sobrenome é obrigatório.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email:</mat-label>
+        <input matInput type="email" formControlName="email">
+        <mat-error *ngIf="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched">
+          Um email válido é obrigatório.
+        </mat-error>
+      </mat-form-field>
     </div>
-  </div>
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Número do Documento:</mat-label>
+        <input matInput type="text" formControlName="documentNumber">
+        <mat-error *ngIf="employeeForm.get('documentNumber')?.invalid && employeeForm.get('documentNumber')?.touched">
+          O número do documento é obrigatório.
+        </mat-error>
+      </mat-form-field>
 
-  <div>
-    <label for="email">Email:</label>
-    <input type="email" id="email" formControlName="email">
-    <div *ngIf="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched">
-      Um email válido é obrigatório.
+      <mat-form-field appearance="outline">
+        <mat-label>Data de Nascimento:</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="birthDate">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="employeeForm.get('birthDate')?.invalid && employeeForm.get('birthDate')?.touched">
+          A data de nascimento é obrigatória.
+        </mat-error>
+      </mat-form-field>
     </div>
-  </div>
 
-  <div>
-    <label for="documentNumber">Número do Documento:</label>
-    <input type="text" id="documentNumber" formControlName="documentNumber">
-    <div *ngIf="employeeForm.get('documentNumber')?.invalid && employeeForm.get('documentNumber')?.touched">
-      O número do documento é obrigatório.
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Telefone:</mat-label>
+        <input matInput type="text" formControlName="phoneNumber">
+        <mat-error *ngIf="employeeForm.get('phoneNumber')?.invalid && employeeForm.get('phoneNumber')?.touched">
+          O telefone é obrigatório.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nível de Cargo:</mat-label>
+          <mat-select formControlName="jobLevel">
+            <mat-option value="JobLevelEnum.None" disabled>Selecione um nível</mat-option>
+            <mat-option *ngFor="let level of jobLevels" value="level">
+              {{ JobLevelEnum[level] }}
+            </mat-option>
+        </mat-select>
+        <mat-error *ngIf="employeeForm.get('jobLevel')?.invalid && employeeForm.get('jobLevel')?.touched">
+          O nível de cargo é obrigatório.
+        </mat-error>
+      </mat-form-field>
     </div>
-  </div>
 
-  <div *ngIf="!isEditMode || employeeForm.get('password')?.value">
-    <label for="password">Senha:</label>
-    <input type="password" id="password" formControlName="password">
-    <div *ngIf="employeeForm.get('password')?.invalid && employeeForm.get('password')?.touched">
-      A senha é obrigatória para o novo cadastro.
+    
+    <div class="form-row">
+      <mat-form-field appearance="outline" *ngIf="!isEditMode || employeeForm.get('password')?.value">
+        <mat-label>Senha:</mat-label>
+        <input matInput type="password" formControlName="password">
+        <mat-error *ngIf="employeeForm.get('password')?.invalid && employeeForm.get('password')?.touched">
+          A senha é obrigatória para o novo cadastro.
+        </mat-error>
+        <mat-hint *ngIf="isEditMode && !employeeForm.get('password')?.value">Deixe em branco para não alterar a senha.</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>ID do Gerente (opcional):</mat-label>
+        <input matInput type="number" formControlName="managerId">
+      </mat-form-field>
     </div>
-    <small *ngIf="isEditMode && !employeeForm.get('password')?.value">Deixe em branco para não alterar a senha.</small>
-  </div>
 
-  <div>
-    <label for="birthDate">Data de Nascimento:</label>
-    <input type="date" id="birthDate" formControlName="birthDate">
-    <div *ngIf="employeeForm.get('birthDate')?.invalid && employeeForm.get('birthDate')?.touched">
-      A data de nascimento é obrigatória.
+    <mat-checkbox formControlName="active">Ativo</mat-checkbox>
+
+    <div>
+      <button mat-raised-button color="primary" type="submit" [disabled]="employeeForm.invalid || employeeForm.pending">
+        {{ isEditMode ? 'Atualizar' : 'Cadastrar' }}
+      </button>
+      <button mat-button type="button" (click)="onCancel()">Cancelar</button>
     </div>
-  </div>
-
-  <div>
-    <label for="jobLevel">Nível de Cargo:</label>
-    <select id="jobLevel" formControlName="jobLevel">
-      <option [ngValue]="JobLevelEnum.None" disabled>Selecione um nível</option>
-      <option *ngFor="let level of jobLevels" [ngValue]="level">
-        {{ JobLevelEnum[level] }}
-      </option>
-    </select>
-    <div *ngIf="employeeForm.get('jobLevel')?.invalid && employeeForm.get('jobLevel')?.touched">
-      O nível de cargo é obrigatório.
-    </div>
-  </div>
-
-  <div>
-    <label for="phoneNumber">Telefone:</label>
-    <input type="text" id="phoneNumber" formControlName="phoneNumber">
-    <div *ngIf="employeeForm.get('phoneNumber')?.invalid && employeeForm.get('phoneNumber')?.touched">
-      O telefone é obrigatório.
-    </div>
-  </div>
-
-  <div>
-    <label for="managerId">ID do Gerente (opcional):</label>
-    <input type="number" id="managerId" formControlName="managerId">
-  </div>
-
-  <div>
-    <input type="checkbox" id="active" formControlName="active">
-    <label for="active">Ativo</label>
-  </div>
-
-  <div>
-    <button type="submit" [disabled]="employeeForm.invalid || employeeForm.pending">
-      {{ isEditMode ? 'Atualizar' : 'Cadastrar' }}
-    </button>
-    <button type="button" (click)="onCancel()">Cancelar</button>
-  </div>
-</form>
+  </form>
+</div>

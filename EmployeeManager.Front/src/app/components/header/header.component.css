@@ -1,0 +1,19 @@
+.app-toolbar {
+  position: fixed; /* Fixa a barra no topo da viewport */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Garante que ela fique acima de outros elementos */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adiciona uma sombra para um efeito 3D */
+  height: 64px; /* Altura padrão para desktop. Ajuste se usar theme diferente. */
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto; /* Isso empurra os elementos à direita do spacer para o final da barra */
+}
+
+/* Estilo para o link ativo (opcional) */
+.active-link {
+  background-color: rgba(255, 255, 255, 0.2); /* Um leve destaque para o link ativo */
+  border-radius: 4px;
+}

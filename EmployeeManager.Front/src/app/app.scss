@@ -1,0 +1,19 @@
+/* app.component.scss */
+.main-content {
+  /* A altura padrão de uma mat-toolbar é 64px para desktop. */
+  /* Ajuste este valor se sua toolbar tiver uma altura diferente. */
+  padding-top: 64px;
+  min-height: calc(100vh - 64px); /* Garante que o conteúdo ocupe o restante da tela */
+  box-sizing: border-box; /* Inclui padding na altura total */
+}
+
+/* Para dispositivos móveis, a altura da toolbar pode ser menor */
+@media (max-width: 599px) { /* Ponto de interrupção padrão do Material para telas pequenas */
+  .app-toolbar {
+    height: 56px; /* Altura padrão da toolbar para mobile */
+  }
+  .main-content {
+    padding-top: 56px;
+    min-height: calc(100vh - 56px);
+  }
+}

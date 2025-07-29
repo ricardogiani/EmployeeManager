@@ -6,7 +6,6 @@ import { Employee } from '../../interfaces/employee';
 import { EmployeeTableComponent } from '../employee-table/employee-table.component';
 import { Router, RouterLink } from '@angular/router';
 import { EmployeeFilter } from '../../interfaces/employee-filter';
-import { JobLevelEnum } from '../../enums/job-level-enum';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
