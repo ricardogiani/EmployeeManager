@@ -67,10 +67,10 @@
         <mat-label>Nível de Cargo:</mat-label>
           <mat-select formControlName="jobLevel">
             <mat-option value="JobLevelEnum.None" disabled>Selecione um nível</mat-option>
-            <mat-option *ngFor="let level of jobLevels" value="level">
+            <mat-option *ngFor="let level of jobLevels" [value]="level">
               {{ JobLevelEnum[level] }}
             </mat-option>
-        </mat-select>
+          </mat-select>
         <mat-error *ngIf="employeeForm.get('jobLevel')?.invalid && employeeForm.get('jobLevel')?.touched">
           O nível de cargo é obrigatório.
         </mat-error>

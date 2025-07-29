@@ -24,7 +24,7 @@
           </mat-error>
         </mat-form-field>
 
-        <div *ngIf="loginError" class="login-error">{{ loginError }}</div>
+        <div *ngIf="loginError" class="login-error">{{ loginError() }}</div>
 
         <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || loading" class="full-width-button">
           <span *ngIf="!loading">Entrar</span>

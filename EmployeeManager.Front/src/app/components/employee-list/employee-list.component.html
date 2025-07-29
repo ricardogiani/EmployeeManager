@@ -16,7 +16,7 @@
 
   <div class="table-container">
     <app-employee-table
-      [employees]="employees"
+      [employees]="employees()"
       (editEmployeeEvent)="onEmployeeEdit($event)"
     ></app-employee-table>
   </div>

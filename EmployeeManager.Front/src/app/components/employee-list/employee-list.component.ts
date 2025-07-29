@@ -30,7 +30,7 @@ export class EmployeeListComponent implements OnInit {
 
   //employeeId = signal('1');
 
-  employees: Employee[] = [];
+  employees = signal<Employee[]>([]);
 
   private employeeService = inject(EmployeeService);
 
@@ -54,7 +54,7 @@ export class EmployeeListComponent implements OnInit {
       next: (data: Employee[]) => {
         //this.foundEmployees = data; // Atribui os dados recebidos à sua propriedade
         //this.loading = false;
-        this.employees = data;
+        this.employees.set(data);
         console.log('Dados recebidos com sucesso:', this.employees);
       },
       // 2. Bloco `error`: Executado se a requisição falhar (erro HTTP, erro de rede, etc.).

@@ -27,7 +27,7 @@ import { MatInputModule } from '@angular/material/input';
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
-  loginError: string = '';
+  loginError = signal<string>('');
 
   @Output() loginEvent = new EventEmitter<{userName: string, logged: boolean }>();
   
@@ -66,7 +66,7 @@ export class LoginComponent implements OnInit {
           },
           error: (err) => {
             console.error('Falha ao efetuar o Login:', err);
-            this.loginError = 'Falha ao efetuar Login. Tente novamente.';
+            this.loginError.set('Falha ao efetuar Login. Tente novamente.');
             this.loading = false;
           }
         });
