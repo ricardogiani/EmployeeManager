@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, input, OnInit, Output, signal } from '@angular/core';
 import { Employee } from '../../interfaces/employee';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-employee-detail',
@@ -33,16 +34,14 @@ import { MatNativeDateModule } from '@angular/material/core';
 export class EmployeeDetailComponent implements OnInit {
 
   loading: boolean = false;
-  error: string = '';
+
   route: ActivatedRoute = inject(ActivatedRoute);
+
+  errorFromServer = signal<string[]>([]);
 
   @Input() allEmployees: Employee[] = [];
 
   employeeService: EmployeeService = inject(EmployeeService);
-
-  // @Input() employee: Employee | null = null;
-  //@Output() formSubmit = new EventEmitter<Employee>();
-  //@Output() cancelForm = new EventEmitter<void>();
 
   editEmployeeId: number = 0;
   employeeForm!: FormGroup;
@@ -51,15 +50,12 @@ export class EmployeeDetailComponent implements OnInit {
   JobLevelEnum = JobLevelEnum;
   jobLevels = Object.values(JobLevelEnum).filter(value => typeof value === 'number' && value !== JobLevelEnum.None);
 
-  //noManagerOption = { id: undefined, firstName: 'Nenhum', lastName: 'Gerente', active: true, birthDate: new Date(), documentNumber: "asdas", email: "email@teste.com", jobLevel: JobLevelEnum.None, phoneNumber: "65465465" } as Employee;
-
   constructor(private fb: FormBuilder, private router: Router) { 
     this.editEmployeeId = Number(this.route.snapshot.params['id']);
   }
 
-  //employee = input.required<Employee>();
-
   ngOnInit() {
+
     this.initForm();
     this.isEditMode = (this.editEmployeeId > 0);
 
@@ -112,10 +108,6 @@ export class EmployeeDetailComponent implements OnInit {
 
         this.allEmployees = value;
 
-        /*if (this.allEmployees) {
-          this.allEmployees = [this.noManagerOption, ...this.allEmployees];
-        }*/
-
         console.error(`Funcionários carregados`);
       },
       error: (err: any) => { 
@@ -145,7 +137,8 @@ export class EmployeeDetailComponent implements OnInit {
     });
   }
 
-  update(employeeId: number, employee: Employee) : void {
+  update(employeeId: number, employee: Employee) : void {    
+    this.clearMessages();
     this.employeeService.update(employeeId, employee).subscribe({
         next: (updatedEmployee) => {
           console.log('Funcionário atualizado com sucesso!', updatedEmployee);
@@ -153,7 +146,7 @@ export class EmployeeDetailComponent implements OnInit {
           this.router.navigate(['/employee-list']);
         },
         error: (err) => {
-          this.error = `Erro ao atualizar funcionário: ${err.message}`;
+          this.errorFromServer.set((err as HttpErrorResponse).error);          
           this.loading = false;
           console.error(err);
         }
@@ -161,18 +154,24 @@ export class EmployeeDetailComponent implements OnInit {
   }
 
   create(employee: Employee) : void {
+    this.clearMessages();
     this.employeeService.create(employee).subscribe({
         next: (createdEmployee) => {
           console.log('Funcionário cadastrado com sucesso!', createdEmployee);
           this.loading = false;
           this.router.navigate(['/employee-list']);
         },
-        error: (err) => {
-          this.error = `Erro ao cadastrar funcionário: ${err.message}`;
+        error: (err) => {          
+          this.errorFromServer.set((err as HttpErrorResponse).error);          
           this.loading = false;
           console.error(err);
         }
       });
+  }
+
+  clearMessages()
+  {
+    this.errorFromServer.set([]);
   }
 
   onSubmit(): void {

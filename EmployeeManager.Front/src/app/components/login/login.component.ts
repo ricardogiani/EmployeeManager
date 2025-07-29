@@ -62,7 +62,7 @@ export class LoginComponent implements OnInit {
           next: (data) => {
             this.loading = false;
             this.loginEvent.emit({ userName: username, logged: true});
-            this.router.navigate(['/employee-list']);
+            this.router.navigate(['/home']);
           },
           error: (err) => {
             console.error('Falha ao efetuar o Login:', err);

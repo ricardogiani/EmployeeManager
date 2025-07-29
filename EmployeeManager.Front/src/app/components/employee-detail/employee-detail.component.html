@@ -102,6 +102,10 @@
 
     <mat-checkbox formControlName="active">Ativo</mat-checkbox>
 
+      <mat-error *ngIf="errorFromServer().length > 0">
+        {{ errorFromServer() }}
+      </mat-error>
+
     <div>
       <button mat-raised-button color="primary" type="submit" [disabled]="employeeForm.invalid || employeeForm.pending">
         {{ isEditMode ? 'Atualizar' : 'Cadastrar' }}

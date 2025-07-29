@@ -94,7 +94,7 @@ namespace EmployeeManager.Adapter.Repositories
         
         private async Task LoadManager(EmployeeEntity entity)
         {
-            if (entity.ManagerId > 0)
+            if (entity?.ManagerId > 0)
             {
                 var manager = await Load(entity.ManagerId.Value);
 
