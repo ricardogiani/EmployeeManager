@@ -31,9 +31,6 @@ export class LoginComponent implements OnInit {
 
   @Output() loginEvent = new EventEmitter<{userName: string, logged: boolean }>();
   
-/*  userName = signal('');
-  password = signal('');*/
-
   private loginService = inject(AuthService);
 
   loading: boolean = false;

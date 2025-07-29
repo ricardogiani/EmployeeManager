@@ -1,8 +1,7 @@
-
+<app-login *ngIf="logged == false" (loginEvent)="loginEvent($event)" />
 <main class="main">
   <div class="main-content">
-    <app-header *ngIf="logged == true" (logoutEvent)="logoutEvent($event)" />
-    <app-login *ngIf="logged == false" (loginEvent)="loginEvent($event)" />
+    <app-header *ngIf="logged == true" (logoutEvent)="logoutEvent($event)" />    
     <router-outlet *ngIf="logged==true"/>
   </div>
 </main>
