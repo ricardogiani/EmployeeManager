@@ -21,5 +21,8 @@
 ## Login
 * admin@company.com, password: Senha123*
 
+## Rodar testes unitários back-end
+* pasta "EmployeeManager.Test" dotnet test
+
 ## Subir back-end local (opcional)
-* pasta "EmployeeManager.Application>" dotnet run
+* pasta "EmployeeManager.Application" dotnet run
