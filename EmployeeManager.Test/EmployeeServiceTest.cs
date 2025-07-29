@@ -98,7 +98,12 @@ namespace EmployeeManager.Test
             repoMock.Setup(repo => repo.Save(employeeToCreate))
                       .ReturnsAsync(employeeToCreate);
 
+            int id_to_find = user.Id;
+            repoMock.Setup(repo => repo.Load(id_to_find))
+                      .ReturnsAsync(user);
+
             EmployeeService service = new EmployeeService(repoMock.Object);
+            service.SetLoggedInEmployee(user.Id, user.LastName);
 
             var newEmployeeCreated = await service.Create(employeeToCreate, string.Empty);
 
@@ -217,7 +222,12 @@ namespace EmployeeManager.Test
             repoMock.Setup(repo => repo.Save(employeeToCreate))
                       .ReturnsAsync(employeeToCreate);
 
+            int id_to_find = user.Id;
+            repoMock.Setup(repo => repo.Load(id_to_find))
+                      .ReturnsAsync(user);
+
             EmployeeService service = new EmployeeService(repoMock.Object);
+            service.SetLoggedInEmployee(user.Id, user.LastName);
 
             var exception = await Assert.ThrowsExceptionAsync<BusinessRuleValidationException>(async () =>
                 {
@@ -267,7 +277,12 @@ namespace EmployeeManager.Test
             repoMock.Setup(repo => repo.Save(employeeToCreate))
                       .ReturnsAsync(employeeToCreate);
 
+            int id_to_find = user.Id;
+            repoMock.Setup(repo => repo.Load(id_to_find))
+                      .ReturnsAsync(user);
+
             EmployeeService service = new EmployeeService(repoMock.Object);
+            service.SetLoggedInEmployee(user.Id, user.LastName);
 
             var exception = await Assert.ThrowsExceptionAsync<BusinessRuleValidationException>(async () =>
                 {
